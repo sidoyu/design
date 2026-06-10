@@ -1,7 +1,7 @@
 # sidoyu design system — DESIGN.md
 
 > 단일 권위 스펙. 코드·Figma·문서가 충돌하면 **`tokens/tokens.json` + 이 문서**가 이긴다.
-> 버전: v0.1.0 (2026-06-10) · 변경 이력은 `CHANGELOG.md`
+> 버전: v0.1.1 (2026-06-11) · 변경 이력은 `CHANGELOG.md`
 
 ---
 

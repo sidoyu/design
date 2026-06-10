@@ -28,14 +28,14 @@ function buttonClass({ variant = "solid", size = "md" }: ButtonStyleProps, class
   );
 }
 
-type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & ButtonStyleProps;
+type ButtonProps = React.ComponentProps<"button"> & ButtonStyleProps;
 
 export function Button({ variant, size, className, type, ...props }: ButtonProps) {
   return <button type={type ?? "button"} className={buttonClass({ variant, size }, className)} {...props} />;
 }
 
 /** 버튼처럼 보이는 링크 (다운로드·외부 링크 등). */
-type ButtonLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & ButtonStyleProps;
+type ButtonLinkProps = React.ComponentProps<"a"> & ButtonStyleProps;
 
 export function ButtonLink({ variant = "ghost", size, className, ...props }: ButtonLinkProps) {
   return <a className={buttonClass({ variant, size }, className)} {...props} />;

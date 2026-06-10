@@ -4,13 +4,13 @@ import { cx } from "./cx";
 const FIELD_CLASS =
   "w-full rounded-control border border-line bg-transparent px-3 py-2 text-sm placeholder:text-ink-faint brand-ring";
 
-type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
+type InputProps = React.ComponentProps<"input">;
 
 export function Input({ className, ...props }: InputProps) {
   return <input className={cx(FIELD_CLASS, className)} {...props} />;
 }
 
-type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
+type TextareaProps = React.ComponentProps<"textarea">;
 
 export function Textarea({ className, ...props }: TextareaProps) {
   return <textarea className={cx(FIELD_CLASS, "min-h-28 resize-y", className)} {...props} />;

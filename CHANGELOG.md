@@ -7,6 +7,12 @@
 
 소비처는 `main`이 아니라 **버전 태그를 고정**해서 가져간다. 버전을 올릴 땐 breaking 항목에 마이그레이션 메모를 함께 적는다.
 
+## v0.1.1 — 2026-06-11
+
+patch — 프리미티브 prop 타입 수정.
+
+- Input·Textarea·Button·ButtonLink·Badge의 prop 타입을 `React.*HTMLAttributes`에서 `React.ComponentProps<"...">`로 교체 — React 19 ref-as-prop(`<Textarea ref={...}>`)이 타입 에러 나던 결함 수정(sidoyu.com Phase 2 적용 중 발견). 런타임 변화 없음.
+
 ## v0.1.0 — 2026-06-10
 
 최초 발행.
