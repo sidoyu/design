@@ -1,5 +1,5 @@
 {
-  "version": "0.1.1",
+  "version": "0.2.0",
   "tokens": {
     "color.brand": {
       "value": "#28FF35",
@@ -136,6 +136,10 @@
     "chart.family.other": {
       "value": "#A3A3A3",
       "type": "color"
+    },
+    "chart.heatmap.cell-radius": {
+      "value": "4px",
+      "type": "dimension"
     },
     "chart.heatmap.level-0": {
       "value": "#EBEDF0",

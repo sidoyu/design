@@ -35,6 +35,10 @@ PATTERNS=(
   $'["[:space:]]underline["[:space:]]\t본문 링크는 brand-underline 사용(단독 underline 금지)'
   $'duration-[0-9]+\tduration 직접 지정 금지(transition-colors 기본 150ms 사용)'
   $'(text|bg)-brand["[:space:]]\tbrand는 텍스트·면 배경 금지(포인트 전용 — hover/selection 토큰만)'
+  $'text-\\[\t임의 텍스트 크기 금지(타입 스케일 6단: xs·sm·base·lg·2xl·3xl)'
+  $'rounded-\\[\t임의 radius 금지(rounded-card/control/full — 차트 내부 값은 chart-palette 상수로)'
+  $'["[:space:]](p|m)[tblrxy]?-\\[\t임의 간격 금지(Tailwind 4px 기본 스케일 사용)'
+  $'(text|bg|border|decoration|ring|outline|fill|stroke)-(red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|slate|gray|zinc|neutral|stone)-[0-9]\tTailwind 팔레트 색 직접 사용 금지(시맨틱 토큰 — 차트 데이터 색은 chart-palette)'
 )
 
 FAIL=0

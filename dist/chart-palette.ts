@@ -1,4 +1,4 @@
-/* AUTO-GENERATED from tokens/tokens.json — 손으로 편집하지 말 것. (sidoyu-design v0.1.1)
+/* AUTO-GENERATED from tokens/tokens.json — 손으로 편집하지 말 것. (sidoyu-design v0.2.0)
  * 데이터 시각화 전용 팔레트. UI 색은 tokens.css의 시맨틱 토큰을 사용할 것. */
 export const FAMILY_COLORS: Record<string, string> = {
   "claude-fable": "#D97706",
@@ -21,6 +21,9 @@ export const HEATMAP_LEVELS: string[] = [
   "#3FB55C",
   "#16A34A",
 ];
+
+/* 히트맵 셀·범례 스와치 모서리 — UI radius 토큰과 격리된 차트 전용 값 */
+export const HEATMAP_CELL_RADIUS = "4px";
 
 export const TOKEN_COMPOSITION: Record<string, string> = {
   "input": "#4F46E5",

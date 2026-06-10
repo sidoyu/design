@@ -1,7 +1,7 @@
 # sidoyu design system — DESIGN.md
 
 > 단일 권위 스펙. 코드·Figma·문서가 충돌하면 **`tokens/tokens.json` + 이 문서**가 이긴다.
-> 버전: v0.1.1 (2026-06-11) · 변경 이력은 `CHANGELOG.md`
+> 버전: v0.2.0 (2026-06-11) · 변경 이력은 `CHANGELOG.md`
 
 ---
 
@@ -60,6 +60,7 @@
 - 굵기 규칙: `font-bold`=페이지 제목 · `font-semibold`=섹션·카드 제목 · `font-medium`=라벨·버튼. 그 외 굵기 금지.
 - 소문자 라벨(eyebrow)은 `text-xs tracking-wide uppercase text-ink-faint`.
 - 줄간격은 Tailwind 기본값. 커스텀 leading 금지(긴 글은 prose 영역에 위임).
+- prose 영역의 제목 크기·굵기는 `prose.css`가 6단 스케일로 정렬한다: h1=2xl/bold · h2=lg/semibold · h3=base/semibold · h4=sm/semibold (§6 prose.css).
 
 ## 5. 간격·레이아웃
 
@@ -93,6 +94,8 @@
 ### Input / Textarea
 `rounded-control border-line bg-transparent px-3 py-2 text-sm placeholder:text-ink-faint brand-ring`. 라벨은 `text-xs font-medium text-ink-muted` + `gap-2`.
 
+**폼 에러 문구**: `text-sm font-medium text-ink` + `role="alert"`. 의미 색(빨강 등) 금지 — 상태는 텍스트로 말한다(§1-4). 강조는 색이 아니라 굵기(font-medium)로.
+
 ### Badge
 `rounded-full bg-surface-subtle px-2 py-0.5 text-xs text-ink-muted`. 의미 색(빨강·노랑 등) 변형 금지 — 상태는 텍스트로 말한다.
 
@@ -101,10 +104,16 @@
 
 **텍스트 링크 규칙**: 본문 속 링크는 `.brand-underline` 하나로 통일. `underline` 단독 사용 금지.
 
+### prose.css (긴 글 영역)
+`@tailwindcss/typography` 플러그인을 쓰는 소비처 전용 토큰 글루(v0.2.0). `tokens.css`·`base.css` 다음에 import.
+- 플러그인의 gray 팔레트 변수(`--tw-prose-*`) 전체를 시맨틱 토큰으로 강제(body/headings=ink · counters/bullets/captions=ink-faint · hr/borders=line · pre 배경=surface-subtle).
+- 제목 크기·굵기를 6단 스케일로 정렬(§4), 링크는 brand-underline과 동일 시각, 코드 블록 radius=`radius-control`.
+- `max-width: none` — 폭은 PageShell이 유일하게 결정(§5). `prose-invert`·`prose-neutral` 등 플러그인 변형 클래스 사용 금지.
+
 ## 7. 차트·데이터 시각화
 
 - 팔레트는 UI와 **격리**: `dist/chart-palette.ts`를 앱에 복사(`lib/design/chart-palette.ts`). UI에 차트 색 금지, 차트에 brand 금지.
-- `FAMILY_COLORS`(AI 모델 패밀리 11색) · `HEATMAP_LEVELS`(5단계, GitHub 그린 — 브랜드 그린 미사용: 대비 미달 결정) · `TOKEN_COMPOSITION`(4색) · `CHART_AXIS`(grid `rgba(0,0,0,.06)` · tick `rgba(0,0,0,.55)`).
+- `FAMILY_COLORS`(AI 모델 패밀리 11색) · `HEATMAP_LEVELS`(5단계, GitHub 그린 — 브랜드 그린 미사용: 대비 미달 결정) · `TOKEN_COMPOSITION`(4색) · `CHART_AXIS`(grid `rgba(0,0,0,.06)` · tick `rgba(0,0,0,.55)`) · `HEATMAP_CELL_RADIUS`(4px — 히트맵 셀·범례 모서리, UI radius 토큰과 격리, `style`로 적용).
 - 축·그리드·툴팁에 인라인 hex 금지 — `CHART_AXIS` 사용.
 - 접근성: 범례·툴팁·표로 수치 병행(그래픽 정보 대비 기준 3:1, 색 단독 전달 금지).
 
@@ -126,7 +135,7 @@
 
 ## 11. 새 프로젝트 적용 절차 (5단계)
 
-1. `dist/tokens.css` + `registry/ui/base.css`를 프로젝트에 복사(또는 raw URL — **버전 태그 고정**, `main` 추적 금지), globals.css에서 `@import "tailwindcss";` 다음에 import.
+1. `dist/tokens.css` + `registry/ui/base.css`를 프로젝트에 복사(또는 raw URL — **버전 태그 고정**, `main` 추적 금지), globals.css에서 `@import "tailwindcss";` 다음에 import. `@tailwindcss/typography`를 쓰면 `registry/ui/prose.css`도 함께(§6).
 2. Geist 폰트 연결: next/font로 Geist·Geist_Mono 로딩 후 `@theme { --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif; --font-mono: var(--font-geist-mono), ui-monospace, monospace; }` glue 추가.
 3. 필요한 프리미티브를 `registry/ui/`에서 `components/ui/`로 복사(차트 쓰면 `chart-palette.ts`도 `lib/design/`에).
 4. `scripts/design-check.sh` 복사 + package.json에 `"design:check": "bash scripts/design-check.sh"` 추가. 의도적 예외는 `.design-check.allow`에 사유 주석과 함께.
@@ -149,6 +158,8 @@
 | 단독 `underline` | `.brand-underline` |
 | `duration-N` 직접 지정 | `transition-colors`(기본 150ms) |
 | `text-brand` · `bg-brand`(면) | brand는 포인트 전용(§1-2) |
+| 임의값: `text-[..]` `rounded-[..]` `p*/m*-[..]` | 스케일 6단·radius 토큰·4px 간격 스케일 (차트 내부 값은 chart-palette 상수) |
+| Tailwind 팔레트 색 (`red-600` `gray-500` 등) | 시맨틱 토큰 — 차트 데이터 색은 chart-palette |
 | 카드/버튼/입력 인라인 재구현 | 프리미티브 사용 |
 
 공식 예외: `hover:bg-ink/80`은 Button solid의 내부 구현 전용(페이지 코드에서 직접 사용 금지).

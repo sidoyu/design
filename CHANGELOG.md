@@ -7,6 +7,16 @@
 
 소비처는 `main`이 아니라 **버전 태그를 고정**해서 가져간다. 버전을 올릴 땐 breaking 항목에 마이그레이션 메모를 함께 적는다.
 
+## v0.2.0 — 2026-06-11
+
+minor — 긴 글(prose) 토큰화 + 차트 radius 토큰 + 검사 패턴 보강. 전부 추가만(breaking 없음).
+
+- **`registry/ui/prose.css` 신규** — `@tailwindcss/typography` 소비처용 토큰 글루. `--tw-prose-*` 변수 전체를 시맨틱 토큰으로 강제, 제목 크기·굵기를 6단 스케일로 정렬(h1=2xl/bold·h2=lg/semibold·h3=base·h4=sm), 링크=brand-underline 시각, pre radius=control, `max-width:none`(폭은 PageShell).
+- **`chart.heatmap.cell-radius` 토큰 신규(4px)** → `chart-palette.ts`에 `HEATMAP_CELL_RADIUS` 발행. 히트맵 셀의 `rounded-[4px]` 임의값 대체. 빌드가 heatmap 그룹을 `$type:"color"`로 필터해 `HEATMAP_LEVELS` 오염 방지.
+- **design-check 패턴 4종 추가**: 임의 텍스트 크기(`text-[..]`)·임의 radius(`rounded-[..]`)·임의 간격(`p*/m*-[..]`)·Tailwind 팔레트 색(`red-600` 등).
+- **DESIGN.md**: prose.css 절(§6)·폼 에러 문구 규칙(`text-sm font-medium text-ink`+`role="alert"`, 의미 색 금지)·HEATMAP_CELL_RADIUS(§7)·금지 패턴 2행 추가.
+- 마이그레이션(선택): 소비처는 `prose.css` 복사+import, `chart-palette.ts`·`design-check.sh` 재복사. 기존 `prose-neutral`·`max-w-none`·`prose-invert` 클래스는 제거.
+
 ## v0.1.1 — 2026-06-11
 
 patch — 프리미티브 prop 타입 수정.
