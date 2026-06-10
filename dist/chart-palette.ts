@@ -1,4 +1,4 @@
-/* AUTO-GENERATED from tokens/tokens.json — 손으로 편집하지 말 것. (sidoyu-design v0.2.0)
+/* AUTO-GENERATED from tokens/tokens.json — 손으로 편집하지 말 것. (sidoyu-design v0.2.1)
  * 데이터 시각화 전용 팔레트. UI 색은 tokens.css의 시맨틱 토큰을 사용할 것. */
 export const FAMILY_COLORS: Record<string, string> = {
   "claude-fable": "#D97706",

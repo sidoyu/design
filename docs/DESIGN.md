@@ -1,7 +1,7 @@
 # sidoyu design system — DESIGN.md
 
 > 단일 권위 스펙. 코드·Figma·문서가 충돌하면 **`tokens/tokens.json` + 이 문서**가 이긴다.
-> 버전: v0.2.0 (2026-06-11) · 변경 이력은 `CHANGELOG.md`
+> 버전: v0.2.1 (2026-06-11) · 변경 이력은 `CHANGELOG.md`
 
 ---
 
@@ -119,7 +119,9 @@
 
 ## 8. 모션
 
-`transition-colors`(기본 150ms) **하나만**. 이동·확대·페이드 등 장식 애니메이션 금지. `duration-*` 클래스 직접 지정 금지.
+`transition-colors`(기본 150ms) **하나만**. 이동·확대·페이드 등 장식 애니메이션 금지. `duration-*` 클래스 직접 지정 금지. `transition-opacity` 등 다른 transition도 금지 — 호버 피드백은 색으로(`hover:text-ink-muted` 등).
+
+공식 예외: 로딩 스켈레톤의 `animate-pulse` — 장식이 아니라 로딩 상태 피드백(그 외 keyframe 애니메이션 금지).
 
 ## 9. 접근성 기준
 
@@ -152,7 +154,7 @@
 | `dark:*` | 없음 — 라이트 전용 |
 | className 인라인 hex | 색 토큰 |
 | `text/border/bg-black/N`, `white/N` | `ink-muted` `ink-faint` `line` `surface-subtle` |
-| `rounded-sm~3xl` | `rounded-card` `rounded-control` `rounded-full` |
+| `rounded`(단독)·`rounded-sm~3xl` | `rounded-card` `rounded-control` `rounded-full` |
 | `max-w-md/3xl/5xl` 등 | PageShell(`max-w-wide/reading/narrow`) |
 | `text-4xl` 이상 | 스케일 6단 안에서 해결 |
 | 단독 `underline` | `.brand-underline` |

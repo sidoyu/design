@@ -7,6 +7,13 @@
 
 소비처는 `main`이 아니라 **버전 태그를 고정**해서 가져간다. 버전을 올릴 땐 breaking 항목에 마이그레이션 메모를 함께 적는다.
 
+## v0.2.1 — 2026-06-11
+
+patch — 검사·문서 보강 (v0.2.0 적용 직후 2차 검토 후속). 토큰 변경 없음.
+
+- design-check: 임의 간격 경계에 backtick·single quote 추가(템플릿 리터럴 className 누락 보완), `gap`·`space-x/y` 임의값, **단독 `rounded`(4px)** 검출 추가, 팔레트 색 prefix 7종 확장(`from/via/to/accent/caret/divide/placeholder`).
+- DESIGN.md §8: 로딩 스켈레톤 `animate-pulse` 공식 예외 명문화 + `transition-opacity` 금지 명시(호버 피드백은 색으로). §12 단독 `rounded` 행 갱신.
+
 ## v0.2.0 — 2026-06-11
 
 minor — 긴 글(prose) 토큰화 + 차트 radius 토큰 + 검사 패턴 보강. 전부 추가만(breaking 없음).
