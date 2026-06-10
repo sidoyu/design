@@ -1,0 +1,43 @@
+/* sidoyu design system — base.css
+ * dist/tokens.css 다음에 import 한다. 순수 CSS(Tailwind @apply 미사용) — 모든 소비처에서 동작. */
+
+/* 라이트 전용 시스템: 시스템 다크모드 무시(카카오 인앱 브라우저 등) */
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  background: var(--color-surface);
+  color: var(--color-ink);
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 텍스트 선택영역 — 브랜드 틴트 */
+::selection {
+  background: var(--color-brand-selection);
+  color: var(--color-ink);
+}
+
+/* 포커스 링 — 모든 인터랙티브 요소에 적용 의무.
+ * 주 표시 = 고대비 ink 링(WCAG 2.2 Focus Appearance 3:1 충족), brand는 바깥 halo 보조.
+ * 브랜드 단독 포커스 링 금지(흰 배경 대비 1.36:1로 미달). */
+.brand-ring:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--color-surface),
+    0 0 0 4px var(--color-ink),
+    0 0 0 7px var(--color-brand-hover);
+}
+
+/* 텍스트 링크 표준 — 얇은 브랜드 밑줄 */
+.brand-underline {
+  text-decoration: underline;
+  text-decoration-color: var(--color-brand);
+  text-underline-offset: 3px;
+  text-decoration-thickness: from-font;
+}
