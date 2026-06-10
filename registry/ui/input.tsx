@@ -2,7 +2,7 @@ import { cx } from "./cx";
 
 /** 입력 필드 공통 스타일. 입력류 마크업을 인라인으로 복제하지 말 것. */
 const FIELD_CLASS =
-  "w-full border border-line bg-transparent px-3 py-2 text-sm placeholder:text-ink-faint brand-ring";
+  "w-full border-2 border-ink bg-transparent px-3 py-2 text-sm placeholder:text-ink-faint brand-ring disabled:opacity-40";
 
 type InputProps = React.ComponentProps<"input">;
 

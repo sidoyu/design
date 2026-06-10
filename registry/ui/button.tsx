@@ -11,7 +11,7 @@ type ButtonStyleProps = {
 
 const VARIANT_CLASS = {
   solid: "bg-ink text-surface hover:bg-ink/80",
-  ghost: "border border-line hover:bg-brand-hover",
+  ghost: "bg-surface-subtle hover:bg-brand-hover",
 } as const;
 
 const SIZE_CLASS = {

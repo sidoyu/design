@@ -7,6 +7,17 @@
 
 소비처는 `main`이 아니라 **버전 태그를 고정**해서 가져간다. 버전을 올릴 땐 breaking 항목에 마이그레이션 메모를 함께 적는다.
 
+## v0.4.0 — 2026-06-11
+
+**breaking** — 박스 폐지·기능적 테두리(gov.uk 문법). 근거: 사용자 가치 "장식 없는 기능적 웹"(2026-06-11, gov.uk 참조 결정).
+
+- **Card 재정의**: 사면 박스(`border border-line p-5`) → **상단 룰 블록**(`border-t border-line py-5`). API(eyebrow/title/description/href)는 그대로 — 소비처 코드 무수정 재컴파일 가능, 시각만 전환.
+- **Input/Textarea**: `border border-line` → **`border-2 border-ink`**(입력 영역 기능 신호).
+- **Button ghost**: 테두리 → **`bg-surface-subtle` 면**(gov.uk secondary 문법).
+- design-check: `border border-line` 사면 박스 금지 패턴. 기능 테두리(차트 툴팁·세그먼트 컨트롤·색 스와치 등)는 `.design-check.allow`에 사유와 함께.
+- DESIGN.md: 원칙 3-2(박스 금지), §6 스펙 갱신.
+- 마이그레이션: dist·프리미티브 4종·design-check.sh 재복사. 페이지의 인라인 박스 마크업(`border border-line`)은 수평선 구획으로 전환하거나 allow 등록.
+
 ## v0.3.0 — 2026-06-11
 
 **breaking** — 직각·플랫 전환(Metro UI풍). 근거: 둥근 카드가 'AI 생성물' 인상(2026-06-11 사용자 결정).

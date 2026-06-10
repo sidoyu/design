@@ -2,8 +2,9 @@ import Link from "next/link";
 import { cx } from "./cx";
 
 /**
- * 범용 카드 컨테이너. href를 주면 전체가 링크가 되고 브랜드 호버 틴트가 붙는다.
- * 인라인으로 카드 마크업을 복제하지 말 것 — 변형이 필요하면 이 컴포넌트를 확장한다.
+ * 구획 블록(v0.4.0 — 박스 아님): 상단 헤어라인 룰 + 세로 패딩으로만 구획한다(gov.uk 문법).
+ * href를 주면 전체가 링크가 되고 브랜드 호버 틴트+포커스 링이 붙는다.
+ * 인라인으로 구획 마크업을 복제하지 말 것 — 변형이 필요하면 이 컴포넌트를 확장한다.
  */
 type CardProps = {
   href?: string;
@@ -15,7 +16,7 @@ type CardProps = {
   children?: React.ReactNode;
 };
 
-const BASE = "block border border-line p-5";
+const BASE = "block border-t border-line py-5";
 
 export function Card({ href, eyebrow, title, description, className, children }: CardProps) {
   const inner = (

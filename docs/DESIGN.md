@@ -1,18 +1,19 @@
 # sidoyu design system — DESIGN.md
 
 > 단일 권위 스펙. 코드·Figma·문서가 충돌하면 **`tokens/tokens.json` + 이 문서**가 이긴다.
-> 버전: v0.3.0 (2026-06-11) · 변경 이력은 `CHANGELOG.md`
+> 버전: v0.4.0 (2026-06-11) · 변경 이력은 `CHANGELOG.md`
 
 ---
 
 ## 1. 정체성과 원칙
 
-**흰 바탕 + 검정 잉크 + 네온 그린 포인트.** Geist 타이포그래피, 얇은 테두리, **직각 모서리**. 플랫, 장식 없음.
+**흰 바탕 + 검정 잉크 + 네온 그린 포인트.** Geist 타이포그래피, **직각 모서리, 박스 없음** — 구획은 수평선·여백·타이포그래피로(gov.uk 문법). 플랫, 장식 없음. 기능적인 웹.
 
 1. **라이트 전용.** 다크모드는 만들지 않는다. `dark:` 클래스 금지. 시스템 다크모드도 무시한다(`color-scheme: light`) — 카카오 인앱 브라우저 등에서 강제 반전을 막기 위한 의도적 결정.
 2. **네온 그린(#28FF35)은 포인트 전용.** 허용: 호버 틴트·링크 밑줄·선택영역·포커스 링. 금지: 넓은 면 배경, 텍스트 색(흰 배경 대비 1.36:1 — 판독 불가).
 3. **시맨틱 토큰 우선.** raw 색·임의 투명도 직접 사용 금지. 토큰에 없는 값이 필요하면 먼저 토큰을 추가한다(이 문서와 함께).
-3-1. **모서리는 직각.** 라운딩 전면 금지(`rounded*`·`border-radius` — radius 토큰은 v0.3.0에서 삭제). 그림자·블러도 금지(포커스 링 box-shadow만 예외). 2026-06-11 결정: 둥근 카드가 'AI 생성물' 인상을 줌 — Metro UI풍 플랫·샤프로 전환.
+3-1. **모서리는 직각.** 라운딩 전면 금지(`rounded*`·`border-radius` — radius 토큰은 v0.3.0에서 삭제). 그림자·블러도 금지(포커스 링 box-shadow만 예외). 2026-06-11 결정: 둥근 카드가 'AI 생성물' 인상을 줌 — 플랫·샤프로 전환.
+3-2. **박스 금지(v0.4.0).** 콘텐츠를 사면 테두리 상자에 담지 않는다. 구획은 **수평선(`border-t/b border-line`)·여백·타이포 위계**로만. 테두리는 기능이 요구하는 곳에만: 입력창 `border-2 border-ink`(입력 영역 식별), 표 행 구분선. 면(`bg-surface-subtle`)은 버튼·배지·표 헤더 같은 작은 기능 요소에만 — 넓은 콘텐츠 면 금지. 2026-06-11 결정: gov.uk식 기능 우선("박스도 장식이다").
 4. **색 단독으로 정보를 전달하지 않는다.** 차트·상태 표시는 텍스트·수치 병행.
 5. **과토큰화 회피.** 간격은 Tailwind 기본 4px 스케일을 그대로 쓰고, 페이지 표준은 PageShell이 강제한다. 그림자·z-index·애니메이션 토큰은 의도적으로 없다(§13).
 
@@ -83,17 +84,19 @@
 ### PageShell
 모든 페이지의 루트. `width="wide|reading|narrow"`(기본 reading). §5 값 강제.
 
-### Card
-범용 카드: `border-line p-5`(직각). `href` 주면 전체 링크 + `hover:bg-brand-hover`(브랜드 틴트 — 회색 호버 금지) + `brand-ring`(§9 포커스 의무). 구성: eyebrow(선택) → title(`text-lg font-semibold`) → description(`text-sm text-ink-muted`) → children.
+### Card (구획 블록 — 박스 아님)
+`block border-t border-line py-5` — 상단 헤어라인 룰 + 세로 패딩으로만 구획(v0.4.0, 사면 박스 금지). `href` 주면 전체 링크 + `hover:bg-brand-hover`(브랜드 틴트 — 회색 호버 금지) + `brand-ring`(§9 포커스 의무). 구성: eyebrow(선택) → title(`text-lg font-semibold`) → description(`text-sm text-ink-muted`) → children. 목록·그리드는 Card를 나열하면 행마다 룰이 생겨 gov.uk식 리스트가 된다.
 
 ### Button / ButtonLink
-- variant: **solid**(`bg-ink text-surface hover:bg-ink/80`) · **ghost**(`border-line hover:bg-brand-hover`). 2종 외 금지.
+- variant: **solid**(`bg-ink text-surface hover:bg-ink/80`) · **ghost**(`bg-surface-subtle hover:bg-brand-hover` — v0.4.0부터 테두리 없는 면, gov.uk secondary 문법). 2종 외 금지.
 - size: **md**(`h-10 px-4 text-sm`) · **sm**(`h-8 px-3 text-xs`).
 - 공통: `font-medium transition-colors brand-ring`(직각), disabled=`opacity-40`+포인터 차단.
 - 링크가 버튼처럼 보여야 하면 ButtonLink(기본 ghost).
 
 ### Input / Textarea
-`border-line bg-transparent px-3 py-2 text-sm placeholder:text-ink-faint brand-ring`(직각). 라벨은 `text-xs font-medium text-ink-muted` + `gap-2`.
+`border-2 border-ink bg-transparent px-3 py-2 text-sm placeholder:text-ink-faint brand-ring`(직각 — **굵은 잉크 테두리는 "입력하는 곳"이라는 기능 신호**, gov.uk 문법. v0.4.0). 라벨은 `text-xs font-medium text-ink-muted` + `gap-2`.
+
+상태: disabled=`opacity-40`(버튼과 동일 문법) · 에러=폼 에러 문구(아래)+`aria-invalid`(테두리 색 변형 없음 — 의미 색 금지 §1-4) · 포커스=brand-ring. readonly는 현재 미사용 — 도입 시 이 절에 스펙 추가가 선행 조건.
 
 **폼 에러 문구**: `text-sm font-medium text-ink` + `role="alert"`. 의미 색(빨강 등) 금지 — 상태는 텍스트로 말한다(§1-4). 강조는 색이 아니라 굵기(font-medium)로.
 
@@ -157,6 +160,7 @@
 | `text/border/bg-black/N`, `white/N` | `ink-muted` `ink-faint` `line` `surface-subtle` |
 | `rounded*` 전부·`border-radius` | 없음 — 직각 모서리(§1-3-1) |
 | `shadow-*`·`backdrop-*` | 없음 — 플랫(포커스 링 box-shadow는 base.css 내부만) |
+| `border border-line` 사면 박스 | 구획은 수평선·여백(§1-3-2). 기능 테두리만 예외(`.design-check.allow`에 사유) |
 | `max-w-md/3xl/5xl` 등 | PageShell(`max-w-wide/reading/narrow`) |
 | `text-4xl` 이상 | 스케일 6단 안에서 해결 |
 | 단독 `underline` | `.brand-underline` |

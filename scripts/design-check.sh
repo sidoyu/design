@@ -31,6 +31,7 @@ PATTERNS=(
   $'(text|border|bg)-white/\twhite/ 투명도 직접 사용 금지(라이트 전용 — 잔재)'
   $'[\'"`[:space:]]rounded([\'"`[:space:]-]|$)\tradius 전면 금지 — 직각 모서리(v0.3.0 플랫 전환)'
   $'[\'"`[:space:]](shadow|backdrop)-\t그림자·블러 금지 — 플랫(포커스 링 box-shadow는 base.css 내부 구현만)'
+  $'[\'"`[:space:]]border border-line\t사면 박스 금지 — 구획은 수평선(border-t/b)·여백(기능 테두리는 allow에 사유와 함께)'
   $'max-w-(xs|sm|md|lg|xl|[2-7]xl)([^a-z-]|$)\t컨테이너 폭은 max-w-wide/reading/narrow만 허용(PageShell 사용)'
   $'text-(4xl|5xl|6xl|7xl|8xl|9xl)\t타입 스케일 6단(xs~3xl) 밖 크기 금지'
   $'["[:space:]]underline["[:space:]]\t본문 링크는 brand-underline 사용(단독 underline 금지)'
