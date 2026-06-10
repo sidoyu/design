@@ -7,7 +7,7 @@ export function Badge({ className, ...props }: BadgeProps) {
   return (
     <span
       className={cx(
-        "inline-flex items-center rounded-full bg-surface-subtle px-2 py-0.5 text-xs text-ink-muted",
+        "inline-flex items-center bg-surface-subtle px-2 py-0.5 text-xs text-ink-muted",
         className
       )}
       {...props}

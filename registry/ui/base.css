@@ -17,6 +17,18 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* 직각 강제(v0.3.0 플랫) — 브라우저 기본 라운딩 제거. 특히 Safari가 search 입력을 둥글게 그림 */
+button,
+input,
+select,
+textarea {
+  border-radius: 0;
+}
+input[type="search"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 /* 텍스트 선택영역 — 브랜드 틴트 */
 ::selection {
   background: var(--color-brand-selection);

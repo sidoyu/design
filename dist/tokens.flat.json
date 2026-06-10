@@ -1,5 +1,5 @@
 {
-  "version": "0.2.1",
+  "version": "0.3.0",
   "tokens": {
     "color.brand": {
       "value": "#28FF35",
@@ -36,14 +36,6 @@
     "color.line": {
       "value": "rgba(0, 0, 0, 0.10)",
       "type": "color"
-    },
-    "radius.card": {
-      "value": "1rem",
-      "type": "dimension"
-    },
-    "radius.control": {
-      "value": "0.75rem",
-      "type": "dimension"
     },
     "container.wide": {
       "value": "64rem",
@@ -136,10 +128,6 @@
     "chart.family.other": {
       "value": "#A3A3A3",
       "type": "color"
-    },
-    "chart.heatmap.cell-radius": {
-      "value": "4px",
-      "type": "dimension"
     },
     "chart.heatmap.level-0": {
       "value": "#EBEDF0",

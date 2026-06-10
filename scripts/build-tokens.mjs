@@ -39,7 +39,7 @@ for (const name of ["brand-hover", "brand-selection"]) {
 }
 
 // ── dist/tokens.css
-const CSS_NAMESPACE = { color: "color", radius: "radius", container: "container" };
+const CSS_NAMESPACE = { color: "color", container: "container" };
 const lines = [];
 for (const [groupName, ns] of Object.entries(CSS_NAMESPACE)) {
   const group = tokens[groupName];
@@ -70,9 +70,6 @@ ${tsObj(tokens.chart.family)}
 export const HEATMAP_LEVELS: string[] = [
 ${Object.entries(tokens.chart.heatmap).filter(([, n]) => isToken(n) && n.$type === "color").map(([, n]) => `  "${n.$value}",`).join("\n")}
 ];
-
-/* 히트맵 셀·범례 스와치 모서리 — UI radius 토큰과 격리된 차트 전용 값 */
-export const HEATMAP_CELL_RADIUS = "${tokens.chart.heatmap["cell-radius"].$value}";
 
 export const TOKEN_COMPOSITION: Record<string, string> = {
 ${tsObj(tokens.chart["token-composition"])}

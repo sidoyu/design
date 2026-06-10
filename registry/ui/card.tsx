@@ -15,7 +15,7 @@ type CardProps = {
   children?: React.ReactNode;
 };
 
-const BASE = "block rounded-card border border-line p-5";
+const BASE = "block border border-line p-5";
 
 export function Card({ href, eyebrow, title, description, className, children }: CardProps) {
   const inner = (
@@ -31,7 +31,7 @@ export function Card({ href, eyebrow, title, description, className, children }:
 
   if (href) {
     return (
-      <Link href={href} className={cx(BASE, "transition-colors hover:bg-brand-hover", className)}>
+      <Link href={href} className={cx(BASE, "transition-colors hover:bg-brand-hover brand-ring", className)}>
         {inner}
       </Link>
     );

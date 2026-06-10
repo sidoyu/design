@@ -21,7 +21,7 @@ const SIZE_CLASS = {
 
 function buttonClass({ variant = "solid", size = "md" }: ButtonStyleProps, className?: string) {
   return cx(
-    "inline-flex items-center justify-center gap-2 rounded-control font-medium transition-colors brand-ring disabled:pointer-events-none disabled:opacity-40",
+    "inline-flex items-center justify-center gap-2 font-medium transition-colors brand-ring disabled:pointer-events-none disabled:opacity-40",
     VARIANT_CLASS[variant],
     SIZE_CLASS[size],
     className

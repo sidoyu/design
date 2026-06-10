@@ -1,17 +1,18 @@
 # sidoyu design system — DESIGN.md
 
 > 단일 권위 스펙. 코드·Figma·문서가 충돌하면 **`tokens/tokens.json` + 이 문서**가 이긴다.
-> 버전: v0.2.1 (2026-06-11) · 변경 이력은 `CHANGELOG.md`
+> 버전: v0.3.0 (2026-06-11) · 변경 이력은 `CHANGELOG.md`
 
 ---
 
 ## 1. 정체성과 원칙
 
-**흰 바탕 + 검정 잉크 + 네온 그린 포인트.** Geist 타이포그래피, 얇은 테두리, 둥근 카드. 장식 없음.
+**흰 바탕 + 검정 잉크 + 네온 그린 포인트.** Geist 타이포그래피, 얇은 테두리, **직각 모서리**. 플랫, 장식 없음.
 
 1. **라이트 전용.** 다크모드는 만들지 않는다. `dark:` 클래스 금지. 시스템 다크모드도 무시한다(`color-scheme: light`) — 카카오 인앱 브라우저 등에서 강제 반전을 막기 위한 의도적 결정.
 2. **네온 그린(#28FF35)은 포인트 전용.** 허용: 호버 틴트·링크 밑줄·선택영역·포커스 링. 금지: 넓은 면 배경, 텍스트 색(흰 배경 대비 1.36:1 — 판독 불가).
-3. **시맨틱 토큰 우선.** raw 색·임의 투명도·임의 radius 직접 사용 금지. 토큰에 없는 값이 필요하면 먼저 토큰을 추가한다(이 문서와 함께).
+3. **시맨틱 토큰 우선.** raw 색·임의 투명도 직접 사용 금지. 토큰에 없는 값이 필요하면 먼저 토큰을 추가한다(이 문서와 함께).
+3-1. **모서리는 직각.** 라운딩 전면 금지(`rounded*`·`border-radius` — radius 토큰은 v0.3.0에서 삭제). 그림자·블러도 금지(포커스 링 box-shadow만 예외). 2026-06-11 결정: 둥근 카드가 'AI 생성물' 인상을 줌 — Metro UI풍 플랫·샤프로 전환.
 4. **색 단독으로 정보를 전달하지 않는다.** 차트·상태 표시는 텍스트·수치 병행.
 5. **과토큰화 회피.** 간격은 Tailwind 기본 4px 스케일을 그대로 쓰고, 페이지 표준은 PageShell이 강제한다. 그림자·z-index·애니메이션 토큰은 의도적으로 없다(§13).
 
@@ -83,37 +84,37 @@
 모든 페이지의 루트. `width="wide|reading|narrow"`(기본 reading). §5 값 강제.
 
 ### Card
-범용 카드: `rounded-card border-line p-5`. `href` 주면 전체 링크 + `hover:bg-brand-hover`(브랜드 틴트 — 회색 호버 금지). 구성: eyebrow(선택) → title(`text-lg font-semibold`) → description(`text-sm text-ink-muted`) → children.
+범용 카드: `border-line p-5`(직각). `href` 주면 전체 링크 + `hover:bg-brand-hover`(브랜드 틴트 — 회색 호버 금지) + `brand-ring`(§9 포커스 의무). 구성: eyebrow(선택) → title(`text-lg font-semibold`) → description(`text-sm text-ink-muted`) → children.
 
 ### Button / ButtonLink
 - variant: **solid**(`bg-ink text-surface hover:bg-ink/80`) · **ghost**(`border-line hover:bg-brand-hover`). 2종 외 금지.
 - size: **md**(`h-10 px-4 text-sm`) · **sm**(`h-8 px-3 text-xs`).
-- 공통: `rounded-control font-medium transition-colors brand-ring`, disabled=`opacity-40`+포인터 차단.
+- 공통: `font-medium transition-colors brand-ring`(직각), disabled=`opacity-40`+포인터 차단.
 - 링크가 버튼처럼 보여야 하면 ButtonLink(기본 ghost).
 
 ### Input / Textarea
-`rounded-control border-line bg-transparent px-3 py-2 text-sm placeholder:text-ink-faint brand-ring`. 라벨은 `text-xs font-medium text-ink-muted` + `gap-2`.
+`border-line bg-transparent px-3 py-2 text-sm placeholder:text-ink-faint brand-ring`(직각). 라벨은 `text-xs font-medium text-ink-muted` + `gap-2`.
 
 **폼 에러 문구**: `text-sm font-medium text-ink` + `role="alert"`. 의미 색(빨강 등) 금지 — 상태는 텍스트로 말한다(§1-4). 강조는 색이 아니라 굵기(font-medium)로.
 
 ### Badge
-`rounded-full bg-surface-subtle px-2 py-0.5 text-xs text-ink-muted`. 의미 색(빨강·노랑 등) 변형 금지 — 상태는 텍스트로 말한다.
+`bg-surface-subtle px-2 py-0.5 text-xs text-ink-muted`(직각 — 알약형 금지). 의미 색(빨강·노랑 등) 변형 금지 — 상태는 텍스트로 말한다.
 
 ### base.css
-`color-scheme: light` 강제 · `::selection` 브랜드 틴트 · `.brand-ring`(포커스: surface 갭 → **ink 고대비 링**(주 표시) → brand halo(보조)) · `.brand-underline`(텍스트 링크 표준: 브랜드색 얇은 밑줄, offset 3px).
+`color-scheme: light` 강제 · `::selection` 브랜드 틴트 · **폼 컨트롤 직각 강제**(브라우저 기본 라운딩 제거 — Safari search 입력 포함) · `.brand-ring`(포커스: surface 갭 → **ink 고대비 링**(주 표시) → brand halo(보조)) · `.brand-underline`(텍스트 링크 표준: 브랜드색 얇은 밑줄, offset 3px).
 
 **텍스트 링크 규칙**: 본문 속 링크는 `.brand-underline` 하나로 통일. `underline` 단독 사용 금지.
 
 ### prose.css (긴 글 영역)
 `@tailwindcss/typography` 플러그인을 쓰는 소비처 전용 토큰 글루(v0.2.0). `tokens.css`·`base.css` 다음에 import.
 - 플러그인의 gray 팔레트 변수(`--tw-prose-*`) 전체를 시맨틱 토큰으로 강제(body/headings=ink · counters/bullets/captions=ink-faint · hr/borders=line · pre 배경=surface-subtle).
-- 제목 크기·굵기를 6단 스케일로 정렬(§4), 링크는 brand-underline과 동일 시각, 코드 블록 radius=`radius-control`.
+- 제목 크기·굵기를 6단 스케일로 정렬(§4), 링크는 brand-underline과 동일 시각, 코드 블록 라운딩 제거(직각).
 - `max-width: none` — 폭은 PageShell이 유일하게 결정(§5). `prose-invert`·`prose-neutral` 등 플러그인 변형 클래스 사용 금지.
 
 ## 7. 차트·데이터 시각화
 
 - 팔레트는 UI와 **격리**: `dist/chart-palette.ts`를 앱에 복사(`lib/design/chart-palette.ts`). UI에 차트 색 금지, 차트에 brand 금지.
-- `FAMILY_COLORS`(AI 모델 패밀리 11색) · `HEATMAP_LEVELS`(5단계, GitHub 그린 — 브랜드 그린 미사용: 대비 미달 결정) · `TOKEN_COMPOSITION`(4색) · `CHART_AXIS`(grid `rgba(0,0,0,.06)` · tick `rgba(0,0,0,.55)`) · `HEATMAP_CELL_RADIUS`(4px — 히트맵 셀·범례 모서리, UI radius 토큰과 격리, `style`로 적용).
+- `FAMILY_COLORS`(AI 모델 패밀리 11색) · `HEATMAP_LEVELS`(5단계, GitHub 그린 — 브랜드 그린 미사용: 대비 미달 결정) · `TOKEN_COMPOSITION`(4색) · `CHART_AXIS`(grid `rgba(0,0,0,.06)` · tick `rgba(0,0,0,.55)`). 히트맵 셀·범례 스와치는 직각(v0.3.0).
 - 축·그리드·툴팁에 인라인 hex 금지 — `CHART_AXIS` 사용.
 - 접근성: 범례·툴팁·표로 수치 병행(그래픽 정보 대비 기준 3:1, 색 단독 전달 금지).
 
@@ -154,13 +155,14 @@
 | `dark:*` | 없음 — 라이트 전용 |
 | className 인라인 hex | 색 토큰 |
 | `text/border/bg-black/N`, `white/N` | `ink-muted` `ink-faint` `line` `surface-subtle` |
-| `rounded`(단독)·`rounded-sm~3xl` | `rounded-card` `rounded-control` `rounded-full` |
+| `rounded*` 전부·`border-radius` | 없음 — 직각 모서리(§1-3-1) |
+| `shadow-*`·`backdrop-*` | 없음 — 플랫(포커스 링 box-shadow는 base.css 내부만) |
 | `max-w-md/3xl/5xl` 등 | PageShell(`max-w-wide/reading/narrow`) |
 | `text-4xl` 이상 | 스케일 6단 안에서 해결 |
 | 단독 `underline` | `.brand-underline` |
 | `duration-N` 직접 지정 | `transition-colors`(기본 150ms) |
 | `text-brand` · `bg-brand`(면) | brand는 포인트 전용(§1-2) |
-| 임의값: `text-[..]` `rounded-[..]` `p*/m*-[..]` | 스케일 6단·radius 토큰·4px 간격 스케일 (차트 내부 값은 chart-palette 상수) |
+| 임의값: `text-[..]` `p*/m*-[..]` `gap-[..]` | 스케일 6단·4px 간격 스케일 (차트 내부 값은 chart-palette 상수) |
 | Tailwind 팔레트 색 (`red-600` `gray-500` 등) | 시맨틱 토큰 — 차트 데이터 색은 chart-palette |
 | 카드/버튼/입력 인라인 재구현 | 프리미티브 사용 |
 
@@ -171,6 +173,7 @@
 | 제외 | 이유 | 재검토 트리거 |
 |---|---|---|
 | 다크모드 | 1인 운영 부담 2배, 카카오 인앱 대응 | 사용자(본인) 재결정 시 |
+| 모서리 라운딩 | 직각·플랫 정체성 — 둥근 카드='AI 생성물' 인상(2026-06-11 사용자 결정, radius 토큰 삭제) | 사용자(본인) 재결정 시 |
 | 그림자 토큰 | 시각 언어가 테두리 중심. 장식 그림자 금지(단, 포커스 링 구현용 `box-shadow`는 예외) | 떠 있는 레이어(모달 등) 도입 시 |
 | z-index 토큰 | 겹치는 레이어 없음 | 모달/토스트/고정 헤더 2개 이상 시 |
 | shadcn/radix | 복합 인터랙션 없음 | 모달·드롭다운·콤보박스 필요 시 |
