@@ -1,6 +1,6 @@
 {
   "name": "sidoyu-design",
-  "version": "0.1.1",
+  "version": "0.4.0",
   "private": true,
   "type": "module",
   "description": "sidoyu personal design system — single-source tokens, primitives, spec",
