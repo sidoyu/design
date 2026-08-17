@@ -1,7 +1,8 @@
 # sidoyu design system — DESIGN.md
 
 > 단일 권위 스펙. 코드·Figma·문서가 충돌하면 **`tokens/tokens.json` + 이 문서**가 이긴다.
-> 버전: v0.5.0 (2026-08-18) · 변경 이력은 `CHANGELOG.md`
+> 둘 사이의 권한 분리: **값 = tokens.json · 의미·사용 규칙 = 이 문서.** 값이 어긋나면 tokens.json이, 용도·금지가 어긋나면 이 문서가 정본이다.
+> 버전: v0.5.1 (2026-08-18) · 변경 이력은 `CHANGELOG.md`
 
 ---
 
@@ -21,7 +22,7 @@
 
 | 구분 | 대상 |
 |---|---|
-| **Current** | 웹(Next.js+Tailwind 4), PWA, Chrome 확장 팝업(토큰만), 게임 UI 크롬(토큰만), 트랜잭션 이메일 |
+| **Current** | 웹(Next.js+Tailwind 4), PWA, Chrome 확장 팝업(토큰만), 게임 UI 크롬(토큰만), 트랜잭션 이메일(색·타이포 토큰만 — hover·포커스 링·유틸리티 클래스 규정은 적용 대상 아님) |
 | **Deferred** | 네이티브 앱(iOS/Android) — 현재 0개. 존재하지 않는 플랫폼용 스펙은 만들지 않는다 |
 | **Trigger** | 네이티브 앱 착수 시: 터치 타깃(≥44pt)·내비게이션·플랫폼 컴포넌트·에셋 내보내기 절을 이 문서에 추가하고 minor 버전 업 |
 
@@ -51,7 +52,7 @@
 | `ink-faint` | `rgba(0,0,0,.55)` | 메타·라벨·날짜 (대비 ≈4.6:1, AA 최소) | **이보다 옅은 텍스트 금지** |
 | `surface` | `#FFF` | 페이지 배경(구획 블록은 투명) | — |
 | `surface-subtle` | `rgba(0,0,0,.03)` | 테이블 헤더·배지 배경 | — |
-| `line` | `rgba(0,0,0,.10)` | 모든 테두리·구분선 | 임의 투명도 변형 |
+| `line` | `rgba(0,0,0,.10)` | 구분선·비기능 테두리(기능 테두리는 §6 — 입력창은 `border-ink`) | 임의 투명도 변형 |
 
 마이그레이션 매핑: `black/70·/60→ink-muted`, `black/50·/45·/40→ink-faint`, `black/10·/15·/20(테두리)→line`, `black/[.03]·/5(배경)→surface-subtle`. 더 보조적인 텍스트가 필요하면 색을 더 옅게 하지 말고 **크기·위치·간격**으로 위계를 만든다.
 
@@ -84,6 +85,8 @@
 
 소스: `registry/ui/`. **variant 추가는 이 문서 갱신이 선행 조건** — 페이지별 예외를 컴포넌트가 흡수하기 시작하면 시스템이 무너진다.
 
+7종 = PageShell · BackLink · Card · Button(ButtonLink는 Button의 링크형이라 별도로 세지 않음) · Input · Textarea · Badge — **export 컴포넌트 단위**로 센다. `base.css`·`prose.css`는 스타일 계층이지 프리미티브가 아니다.
+
 ### PageShell
 모든 페이지의 루트. `width="wide|reading|narrow"`(기본 reading). §5 값 강제.
 **2층 구조(v0.5.0)**: 바깥 `<main>`은 항상 `mx-auto w-full max-w-wide px-6 pt-6 pb-14`(wide 중앙 배치), 안쪽 div가 `max-w-reading`/`max-w-narrow`를 왼쪽 정렬로 적용 — 모든 본문이 헤더와 같은 왼쪽 기준선에서 시작(§5). **breaking**: `className`은 바깥 `<main>`이 아니라 안쪽 콘텐츠 레이어에 적용된다.
@@ -92,7 +95,7 @@
 상세(자식) 페이지 상단 뒤로가기 표준. `text-xs text-ink-faint` 문단 안 `← {부모 섹션명}` 링크(`brand-underline brand-ring`). `min-h-6`으로 텍스트는 text-xs를 유지하면서 터치 타깃 24px 확보. 모든 상세 페이지의 **첫 요소**로 쓰고, 다음 블록은 `mt-3`.
 
 ### Card (구획 블록 — 박스 아님)
-`block border-t border-line py-5` — 상단 헤어라인 룰 + 세로 패딩으로만 구획(v0.4.0, 사면 박스 금지). `href` 주면 전체 링크 + `hover:bg-brand-hover`(브랜드 틴트 — 회색 호버 금지) + `brand-ring`(§9 포커스 의무). 구성: eyebrow(선택) → title(`text-lg font-semibold`) → description(`text-sm text-ink-muted`) → children. 목록·그리드는 Card를 나열하면 행마다 룰이 생겨 gov.uk식 리스트가 된다.
+`block border-t border-line py-5` — 상단 헤어라인 룰 + 세로 패딩으로만 구획(v0.4.0, 사면 박스 금지). `href` 주면 전체 링크 + `hover:bg-brand-hover`(브랜드 틴트 — 회색 호버 금지) + `brand-ring`(§9 포커스 의무). 링크 카드의 호버 틴트는 **`-mx-2 px-2`로 좌우 8px 확장**(텍스트 기준선은 유지, 틴트만 번짐 — 표준 그리드 `gap-4`에서 인접 카드와 겹치지 않는 상한. v0.5.1). 구성: eyebrow(선택) → title(`text-lg font-semibold`) → description(`text-sm text-ink-muted`) → children. 목록·그리드는 Card를 나열하면 행마다 룰이 생겨 gov.uk식 리스트가 된다.
 
 ### Button / ButtonLink
 - variant: **solid**(`bg-ink text-surface hover:bg-ink/80`) · **ghost**(`bg-surface-subtle hover:bg-brand-hover` — v0.4.0부터 테두리 없는 면, gov.uk secondary 문법). 2종 외 금지.
@@ -105,7 +108,7 @@
 
 상태: disabled=`opacity-40`(버튼과 동일 문법) · 에러=폼 에러 문구(아래)+`aria-invalid`(테두리 색 변형 없음 — 의미 색 금지 §1-4) · 포커스=brand-ring. readonly는 현재 미사용 — 도입 시 이 절에 스펙 추가가 선행 조건.
 
-**폼 에러 문구**: `text-sm font-medium text-ink` + `role="alert"`. 의미 색(빨강 등) 금지 — 상태는 텍스트로 말한다(§1-4). 강조는 색이 아니라 굵기(font-medium)로.
+**폼 에러 문구**: `text-sm font-medium text-ink` + `role="alert"`. 오류 문구에 `id`를 주고 해당 입력의 `aria-describedby`로 연결한다 — 어느 입력의 오류인지가 계약의 일부다(v0.5.1). 의미 색(빨강 등) 금지 — 상태는 텍스트로 말한다(§1-4). 강조는 색이 아니라 굵기(font-medium)로.
 
 ### Badge
 `bg-surface-subtle px-2 py-0.5 text-xs text-ink-muted`(직각 — 알약형 금지). 의미 색(빨강·노랑 등) 변형 금지 — 상태는 텍스트로 말한다.
@@ -138,7 +141,7 @@
 
 - 텍스트 대비 ≥4.5:1 (토큰이 보장 — `ink-faint`가 하한), 그래픽 ≥3:1.
 - 모든 인터랙티브 요소에 `brand-ring`(포커스 가시성) — 프리미티브가 내장, 커스텀 요소도 의무. 포커스 주 표시는 ink 고대비 링(≥3:1), **brand 단독 포커스 링 금지**(대비 1.36:1 미달).
-- 터치/클릭 타깃: 버튼 md 40px 기준(sm은 보조 액션 한정). 문장 밖에 홀로 서는 텍스트 링크(BackLink·목록형 링크 등)는 높이 ≥24px 확보(WCAG 2.2 2.5.8 AA — BackLink는 `min-h-6`으로 내장, §6). 본문 문장 속 링크는 인라인 예외 — 줄 높이에 종속되므로 24px을 강제하지 않는다.
+- 터치/클릭 타깃: 버튼 md 40px 기준(sm은 보조 액션 한정). 문장 밖에 홀로 서는 텍스트 링크(BackLink·목록형 링크 등)는 크기 ≥24×24px 확보(WCAG 2.2 2.5.8 AA) — 높이는 `min-h-6`(BackLink 내장, §6), 폭은 텍스트 링크라면 보통 자연 충족하지만 화살표·아이콘 단독처럼 짧은 타깃은 최소 폭도 함께 확보한다. 본문 문장 속 링크는 인라인 예외 — 줄 높이에 종속되므로 24px을 강제하지 않는다.
 - 색 단독 정보 전달 금지(§1-4).
 
 ## 10. 브랜드 위계
@@ -195,7 +198,7 @@
 ## 14. Figma 미러 규정
 
 - 코드(`tokens.json`)가 원본, **Figma는 읽기 전용 미러**(시안 작업용). Figma에서 직접 수정 금지 — 수정하고 싶은 값은 tokens.json을 고치고 재생성.
-- 생성: `dist/tokens.flat.json` 기반으로 Figma Variables(색·radius·spacing)·타입 스타일·프리미티브 프레임 생성(Phase 4, Figma MCP).
+- 생성: `dist/tokens.flat.json` 기반으로 Figma Variables(색·spacing — radius 토큰은 v0.3.0에서 삭제됨)·타입 스타일·프리미티브 프레임 생성(Phase 4, Figma MCP).
 - 라이브러리 첫 페이지에 의무 표기: source repo · 버전 · 생성일. 매핑은 `figma/figma-manifest.json`에 보관.
 
 ## 15. 변경 관리
