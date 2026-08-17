@@ -5,7 +5,21 @@
 - **minor** — 추가만 있는 변경(새 토큰·새 컴포넌트)
 - **patch** — 값 미세 조정·문서·버그픽스
 
+단, 1.0 이전에는 minor 릴리스가 breaking 변경을 포함할 수 있다(semver 0.x 관행 — v0.3.0·v0.4.0·v0.5.0이 이에 해당). major 승격은 1.0.0 도달 시점에 판단한다.
+
 소비처는 `main`이 아니라 **버전 태그를 고정**해서 가져간다. 버전을 올릴 땐 breaking 항목에 마이그레이션 메모를 함께 적는다.
+
+## v0.5.0 — 2026-08-18
+
+**breaking** — PageShell 단일 좌측 기준선(gov.uk 문법). 근거: reading/narrow 페이지가 중앙 배치라 본문 시작선이 헤더 로고와 어긋나던 문제(2026-08-18 sidoyu.com 정렬 결정).
+
+- **PageShell 2층 구조**: 바깥 `<main>`은 항상 `mx-auto w-full max-w-wide px-6 pt-6 pb-14`(wide 중앙 배치), 안쪽 div가 `max-w-reading`/`max-w-narrow`를 **왼쪽 정렬**로 적용. 폭 3종의 의미가 "컨테이너 중앙 배치" → **"줄 길이(measure) 상한"**으로 바뀜 — 모든 페이지 본문이 헤더 로고와 같은 왼쪽 기준선에서 시작.
+- **breaking**: `className` prop이 바깥 `<main>`이 아니라 **안쪽 콘텐츠 레이어**에 적용된다. 바깥 틀을 겨냥하던 className은 소비처에서 재검토.
+- **BackLink 프리미티브 신설**(6종→7종): 상세(자식) 페이지 상단 뒤로가기 표준 — `text-xs text-ink-faint` + `brand-underline brand-ring`, `min-h-6`으로 터치 타깃 24px 확보. 상세 페이지의 첫 요소로 쓰고 다음 블록은 `mt-3`.
+- 구조 변경으로 페이지 패딩 `px-6`이 measure 밖으로 나가 **실측 본문 폭이 토큰 값과 정확히 일치**(기존 대비 +48px, reading=48rem=768px 그대로).
+- 토큰 값 변경 없음(컨테이너 64/48/28rem 불변) — meta.version만 0.5.0.
+- DESIGN.md: §5 컨테이너 절 재정의(단일 좌측 기준선·measure·인셋 텍스트 `border-l-2 border-line pl-3`), §6 PageShell 2층 구조·BackLink 스펙(6종→7종).
+- 마이그레이션: `page-shell.tsx` 재복사 + `back-link.tsx` 신규 복사 + dist 재복사. PageShell `className`이 바깥 틀을 겨냥했는지 점검하고, 상세 페이지의 인라인 뒤로가기 링크는 BackLink로 교체.
 
 ## v0.4.0 — 2026-06-11
 

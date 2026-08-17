@@ -1,7 +1,7 @@
 # sidoyu design system — DESIGN.md
 
 > 단일 권위 스펙. 코드·Figma·문서가 충돌하면 **`tokens/tokens.json` + 이 문서**가 이긴다.
-> 버전: v0.4.0 (2026-06-11) · 변경 이력은 `CHANGELOG.md`
+> 버전: v0.5.0 (2026-08-18) · 변경 이력은 `CHANGELOG.md`
 
 ---
 
@@ -29,7 +29,7 @@
 
 | 자산 | 적용 수준 | 상태 |
 |---|---|---|
-| sidoyu.com | 전면 적용 (1차 소비자) | ✅ v0.4.0 적용 중 |
+| sidoyu.com | 전면 적용 (1차 소비자) | ✅ v0.5.0 적용 중 |
 | 개인 PWA 1종 | 토큰+일부 프리미티브 | Phase 5 예정 |
 | Chrome 확장 1종 | 색·타이포 토큰만 | Phase 5 예정 |
 | 웹게임 1종 | UI 크롬만 | 재기획 통과 후 (Phase 5) |
@@ -66,23 +66,30 @@
 
 ## 5. 간격·레이아웃
 
-- **페이지 틀은 PageShell이 유일한 진입점**: `mx-auto px-6 pt-6 pb-14` + 폭 3종. 페이지마다 패딩을 손대지 않는다.
+- **페이지 틀은 PageShell이 유일한 진입점**: 바깥 틀은 항상 **wide(64rem) 중앙 배치**(`mx-auto w-full max-w-wide px-6 pt-6 pb-14`). 모든 페이지의 본문 왼쪽 시작선 = 헤더 로고 왼쪽 선(**단일 좌측 기준선**, gov.uk 문법). 페이지마다 패딩을 손대지 않는다.
+- 폭 3종은 **컨테이너 위치가 아니라 줄 길이(measure) 상한**: reading/narrow는 안쪽 콘텐츠 레이어에 왼쪽 정렬로 적용된다(중앙 배치 아님).
 
-| 폭 | 토큰 | 값 | 쓰는 곳 |
+| 폭 | 토큰 | 값 | 의미(줄 길이 상한) |
 |---|---|---|---|
-| `wide` | `max-w-wide` | 64rem(1024px) | 카드 그리드(홈·플레이그라운드) |
-| `reading` | `max-w-reading` | 48rem(768px) | 글·리스트·대시보드 (기본값) |
-| `narrow` | `max-w-narrow` | 28rem(448px) | 폼(CV·연락처) |
+| `wide` | `max-w-wide` | 64rem(1024px) | 바깥 틀 폭 그대로(상한 미적용) — 카드 그리드·표(홈·플레이그라운드) |
+| `reading` | `max-w-reading` | 48rem(768px) | 글·리스트·대시보드의 줄 길이 상한 (기본값) |
+| `narrow` | `max-w-narrow` | 28rem(448px) | 폼(CV·연락처)의 줄 길이 상한 |
 
+- 페이지 패딩 `px-6`은 바깥 틀에 있어 measure 밖 — 실측 본문 폭이 토큰 값 그대로다(reading=48rem=768px).
 - 간격 표준: 구획 블록(Card) 세로 `py-5` · 그리드/리스트 간격 `gap-4` · 섹션 사이 `mt-10` · 제목 아래 `mt-2` · 라벨-입력 `gap-2`.
+- 인셋 텍스트: 보조 주석 블록은 `border-l-2 border-line pl-3`(gov.uk inset text 문법 — 사면 박스 금지(§1-3-2)의 대체).
 - 그리드: wide 페이지는 `grid gap-4 sm:grid-cols-2 lg:grid-cols-3`.
 
-## 6. 컴포넌트 스펙 (프리미티브 6종)
+## 6. 컴포넌트 스펙 (프리미티브 7종)
 
 소스: `registry/ui/`. **variant 추가는 이 문서 갱신이 선행 조건** — 페이지별 예외를 컴포넌트가 흡수하기 시작하면 시스템이 무너진다.
 
 ### PageShell
 모든 페이지의 루트. `width="wide|reading|narrow"`(기본 reading). §5 값 강제.
+**2층 구조(v0.5.0)**: 바깥 `<main>`은 항상 `mx-auto w-full max-w-wide px-6 pt-6 pb-14`(wide 중앙 배치), 안쪽 div가 `max-w-reading`/`max-w-narrow`를 왼쪽 정렬로 적용 — 모든 본문이 헤더와 같은 왼쪽 기준선에서 시작(§5). **breaking**: `className`은 바깥 `<main>`이 아니라 안쪽 콘텐츠 레이어에 적용된다.
+
+### BackLink
+상세(자식) 페이지 상단 뒤로가기 표준. `text-xs text-ink-faint` 문단 안 `← {부모 섹션명}` 링크(`brand-underline brand-ring`). `min-h-6`으로 텍스트는 text-xs를 유지하면서 터치 타깃 24px 확보. 모든 상세 페이지의 **첫 요소**로 쓰고, 다음 블록은 `mt-3`.
 
 ### Card (구획 블록 — 박스 아님)
 `block border-t border-line py-5` — 상단 헤어라인 룰 + 세로 패딩으로만 구획(v0.4.0, 사면 박스 금지). `href` 주면 전체 링크 + `hover:bg-brand-hover`(브랜드 틴트 — 회색 호버 금지) + `brand-ring`(§9 포커스 의무). 구성: eyebrow(선택) → title(`text-lg font-semibold`) → description(`text-sm text-ink-muted`) → children. 목록·그리드는 Card를 나열하면 행마다 룰이 생겨 gov.uk식 리스트가 된다.

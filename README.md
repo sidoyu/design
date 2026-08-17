@@ -12,7 +12,7 @@ dist/
   tokens.css              ← Tailwind 4 @theme (소비처가 import)
   chart-palette.ts        ← 차트 전용 팔레트 (앱에 복사)
   tokens.flat.json        ← Figma·비 Tailwind 플랫폼용 평면 맵
-registry/ui/              ← 프리미티브 6종 소스 (PageShell·Card·Button·Input·Badge·base.css)
+registry/ui/              ← 프리미티브 7종 소스 (PageShell·BackLink·Card·Button·Input·Badge·base.css)
 scripts/design-check.sh   ← 금지 패턴 검사 (소비처에 복사)
 docs/DESIGN.md            ← 전체 스펙 (단일 권위 문서)
 ```
