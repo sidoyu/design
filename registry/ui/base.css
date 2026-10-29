@@ -50,7 +50,8 @@ progress {
  * 주 표시 = 고대비 ink 링(WCAG 2.2 Focus Appearance 3:1 충족), brand는 바깥 halo 보조.
  * 브랜드 단독 포커스 링 금지(흰 배경 대비 1.36:1로 미달).
  * outline 을 지우지 않고 투명으로 둔다 — 강제 색상(고대비) 모드는 box-shadow 를 그리지 않고 outline 을 시스템 색으로 그린다(v0.6.0).
- * sd- 부품은 링을 내장한다(소비처가 brand-ring 을 따로 붙이지 않아도 된다). */
+ * sd- 부품은 링을 내장한다(소비처가 brand-ring 을 따로 붙이지 않아도 된다).
+ * 예외 — 복합 입력(.sd-composer)의 바깥 묶음은 링을 받지 않는다: 글자 커서가 포커스 표시다(WCAG 2.4.7, v0.6.1). */
 .brand-ring:focus-visible,
 .sd-btn:focus-visible,
 .sd-field:focus-visible,
@@ -58,11 +59,12 @@ progress {
 .sd-list-item:focus-visible,
 .sd-details > summary:focus-visible,
 .sd-block-link:focus-visible,
-.sd-table th > button:focus-visible,
+.sd-table thead th > button:focus-visible,
 .sd-table-wrap:focus-visible,
+pre.sd-code:focus-visible,
+.prose a:focus-visible,
 input[type="checkbox"]:focus-visible,
-input[type="radio"]:focus-visible,
-.sd-composer:focus-within {
+input[type="radio"]:focus-visible {
   outline: 2px solid transparent;
   outline-offset: 2px;
   box-shadow:
@@ -289,7 +291,8 @@ select.sd-field {
   color: var(--color-error);
 }
 
-/* 복합 입력(입력창 + 도구줄) — 바깥 묶음이 포커스 링을 받고(:focus-within, 위 링 목록), 안쪽 버튼은 각자 :focus-visible 링 */
+/* 복합 입력(입력창 + 도구줄) — 바깥 묶음은 포커스 링을 받지 않는다(textarea 의 글자 커서가 포커스 표시, v0.6.1).
+ * 안쪽 버튼은 각자 :focus-visible 링을 갖는다. caret-color 는 건드리지 않는다. */
 .sd-composer {
   border: 2px solid var(--color-ink);
   background: var(--color-surface);
@@ -365,6 +368,7 @@ select.sd-field {
 }
 
 /* ── 표 — 헤더 면 없음. 헤더 = 굵은 라벨 + 잉크 1px 선(머리·몸 경계), 행 = line 1px.
+ * 머리 규칙은 thead 안의 th 에만 건다(v0.6.1) — 몸통의 행 머리 th 는 td 와 같은 칸이다.
  * 넓은 표는 .sd-table-wrap 안에 둔다(가로 스크롤은 표 상자 안에서만 · 상자에 tabindex="0" + aria-label) */
 .sd-table-wrap {
   overflow-x: auto;
@@ -375,7 +379,7 @@ select.sd-field {
   font-size: 0.875rem;
   line-height: 1.25rem;
 }
-.sd-table th {
+.sd-table thead th {
   text-align: left;
   font-weight: 500;
   color: var(--color-ink-muted);
@@ -385,10 +389,16 @@ select.sd-field {
   background: var(--color-surface);
   white-space: nowrap;
 }
-.sd-table td {
+.sd-table td,
+.sd-table tbody th {
   padding: 0.625rem 0.75rem;
   border-bottom: 1px solid var(--color-line);
   vertical-align: baseline;
+}
+/* 몸통의 행 머리 = 라벨 굵기(font-medium), 왼쪽 정렬 — 머리 규칙(잉크 선·ink-muted)은 받지 않는다 */
+.sd-table tbody th {
+  text-align: left;
+  font-weight: 500;
 }
 .sd-table th:first-child,
 .sd-table td:first-child {
@@ -398,8 +408,8 @@ select.sd-field {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
-/* 정렬 단추 — th 안 <button>, 방향은 th 의 aria-sort 가 주인이고 화살표는 보조 */
-.sd-table th > button {
+/* 정렬 단추 — 머리 th 안 <button>, 방향은 th 의 aria-sort 가 주인이고 화살표는 보조 */
+.sd-table thead th > button {
   all: unset;
   display: inline-flex;
   align-items: center;
@@ -433,10 +443,40 @@ select.sd-field {
 }
 .sd-details > summary::before {
   content: "›";
+  flex: none;
   width: 0.75rem;
 }
 .sd-details[open] > summary::before {
   content: "⌄";
+}
+/* 머리줄의 상태 글자는 한 줄로 고정한다(v0.6.1) — 한글은 음절마다 줄바꿈이 허용되어,
+ * 줄어드는 flex 칸에 두면 「실/패」처럼 한 글자씩 쪼개진다. 줄어드는 칸은 소비처가 하나(인자 등)만 둔다 */
+.sd-details > summary > .sd-status {
+  flex: none;
+  white-space: nowrap;
+}
+
+/* ── 코드 — 인라인 <code> 와 블록 <pre> 에 같은 클래스(v0.6.1). 면 = surface-subtle, 직각.
+ * 고정폭 글꼴은 --font-mono(Tailwind 가 정의)를 쓰고, 없으면 시스템 고정폭으로 내려간다 */
+.sd-code {
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 0.875em;
+  background: var(--color-surface-subtle);
+  padding: 0 0.25rem;
+}
+pre.sd-code {
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 0.75rem 1rem;
+  white-space: pre;
+  line-height: 1.55;
+  tab-size: 2;
+}
+pre.sd-code > code {
+  font: inherit;
+  background: none;
+  padding: 0;
 }
 
 /* ── 목록 행 — 제목 + 메타, 행 전체가 링크·버튼. 선택 = 잉크 좌측 2px + 굵게(aria-current) */

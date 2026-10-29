@@ -2,7 +2,7 @@
 
 > 단일 권위 스펙. 코드·Figma·문서가 충돌하면 **`tokens/tokens.json` + 이 문서**가 이긴다.
 > 둘 사이의 권한 분리: **값 = tokens.json · 의미·사용 규칙 = 이 문서.** 값이 어긋나면 tokens.json이, 용도·금지가 어긋나면 이 문서가 정본이다.
-> 버전: v0.6.0 (2026-10-29) · 변경 이력은 `CHANGELOG.md`
+> 버전: v0.6.1 (2026-10-29) · 변경 이력은 `CHANGELOG.md`
 > **모양의 정본 = `registry/ui/base.css` 의 `sd-*` 클래스**(v0.6.0). React 부품은 이 클래스를 입히는 껍데기이고, 일반 CSS·생성 HTML 소비처도 같은 클래스를 쓴다(§17).
 
 ---
@@ -93,6 +93,7 @@
 
 - 문서형 페이지는 PageShell 을 쓴다. 작업 화면(사이드바·고정 입력창이 있는 화면)은 전체 폭을 쓰고, 본문 줄 길이만 `reading` 상한을 지킨다. 새 폭 토큰·AppShell 부품은 만들지 않는다.
 - 머리글: 제품명은 왼쪽, 상대 제품으로 가는 링크는 오른쪽 끝에 둔다.
+- 머리글은 화면 가장자리를 기준으로 놓고, 본문 열(`reading` 상한)의 끝과 맞추지 않는다 — 넓은 화면에서 머리글 오른쪽 끝과 입력창 오른쪽 끝이 다른 것은 규칙대로다. 좁은 화면(48rem 미만)에서는 머리글과 본문이 같은 좌우 여백을 쓴다(v0.6.1).
 - 좁은 화면 경계는 **48rem 하나**다(이보다 좁으면 사이드바 → 서랍).
 - 겹침 층은 고정값 3층으로 쓴다: 고정 머리글·표 머리 = 10 · 스크림 = 20 · 서랍·패널 = 30. 스크림 = 잉크 20%.
 - 부품 반응형은 줄바꿈(flex-wrap)을 우선한다. 컨테이너 쿼리는 폭이 정해진 자리에서만 쓴다 — `container-type` 은 폭이 내용으로 정해지는 자리에서 폭을 0 으로 접는다.
@@ -151,15 +152,20 @@
 
 **표(`.sd-table` · `.sd-table-wrap` · `.sd-num` · `.sd-row--idle`)**
 - 넓은 표는 `.sd-table-wrap`(가로 스크롤 상자) 안에 둔다. 상자에 `tabindex="0"` + `role="region"` + `aria-label` 을 준다. 좁은 화면 전략은 이것 하나다.
-- 헤더 면 없음: `th` = `font-medium` · `ink-muted` · 아래 **잉크 1px**(머리·몸 경계) · 행 = `line` 1px.
+- 헤더 면 없음: `thead th` = `font-medium` · `ink-muted` · 아래 **잉크 1px**(머리·몸 경계) · 행 = `line` 1px.
+- 머리 규칙은 `thead` 안의 `th` 에만 걸린다(v0.6.1). 몸통의 행 머리 `th` 는 `td` 와 같은 칸(행 `line` 1px)이고 `font-medium` 왼쪽 정렬만 갖는다 — 그 안의 단추는 정렬 단추 초기화를 받지 않는다.
 - `.sd-num` = 오른쪽 정렬 + `tabular-nums` · 모르는 값은 「—」.
-- 정렬 = `th` 안 `<button>`(높이 24px 이상) + `th` 의 `aria-sort`(화살표는 보조).
+- 정렬 = `thead th` 안 `<button>`(높이 24px 이상) + `th` 의 `aria-sort`(화살표는 보조).
 - 업무상 유휴 행 = `.sd-row--idle`(`ink-muted`). 비활성 컨트롤이 아니므로 opacity·`ink-faint` 로 흐리지 않는다.
 - 고정 머리(sticky)를 쓰면 `th` 배경을 불투명한 `surface` 로 둔다(아래 행이 비쳐 겹치지 않게). `.sd-table-wrap` 은 `overflow-x: auto` 때문에 세로로도 스크롤 상자가 되어 sticky 기준이 화면에서 상자로 바뀐다 → 고정 머리를 쓰는 표는 상자에 높이를 정해 세로 스크롤도 상자가 갖게 하거나(예: `max-height: calc(100dvh - 머리글 높이)`), 가로 넘침이 없는 표면 상자를 쓰지 않는다.
 
 **접이식(`.sd-details`)** — 네이티브 `<details>`/`<summary>`. 좌측 2px `line` + 머리줄 `text-xs ink-muted` + `›`/`⌄`.
 - 머리줄 문구가 안의 상태를 요약한다(「도구 3개 실행 · 1개 실패」).
-- **안에 실패가 있으면 머리줄의 그 조각을 `.sd-status--error` 로 쓰고, 기본으로 펼친다(`open`)** — 닫힌 머리줄에서 실패가 정상과 같은 무게로 묻히지 않게.
+- **안에 실패가 있으면 머리줄의 그 조각을 `.sd-status--error` 로 쓴다**(닫힌 머리줄에서 실패가 정상과 같은 무게로 묻히지 않게). 펼칠지는 실패의 성격으로 정한다(v0.6.1):
+  - **결과인 실패**(그 실패로 일이 끝남 — 마지막 단계가 실패, 또는 전체가 실패) = 기본으로 펼친다(`open`). 전체가 실패면 접이식 밖에 `.sd-callout--error` 로도 알린다.
+  - **과정인 실패**(뒤에 다른 시도가 이어짐) = 머리줄의 「실패」 표시만 두고 접어 둔다.
+  - 판정은 일어난 사실(뒤에 단계가 이어졌는가)로만 한다. "복구됨"을 추론해 표시하지 않는다(§16-4).
+- 머리줄 안의 `.sd-status` 는 한 줄로 고정된다(`flex: none` · `white-space: nowrap`, v0.6.1 — 한글은 음절마다 줄바꿈이 허용되어 줄어드는 칸에 두면 「실/패」로 쪼개진다). 줄어드는 칸은 하나(인자·경로 등)만 두고 그 칸에 `min-width: 0` 과 말줄임을 준다. 순서 = 이름 · 상태 · 인자.
 - `summary` 에 `aria-label` 을 달지 않는다(안의 문구를 가린다).
 
 **목록 행(`.sd-list` · `.sd-list-item`)** — 선택 가능한 행. `<a>`·`<button>` 모두 쓸 수 있다(버튼 초기화 내장: 테두리·배경 없음, 폭 100%, 왼쪽 정렬, 글꼴 상속). 제목 `text-sm` + 메타 `.sd-meta` · 호버 `brand-hover` · 선택 = `aria-current` → 잉크 좌측 2px + 굵게. Card(구획 블록)와 다르다.
@@ -169,7 +175,9 @@
 - 세그먼트 = 값 선택. `aria-pressed` 단추 묶음 + 그룹 라벨 의무(React `Segmented`).
 - 5~7개 상한.
 
-**복합 입력(`.sd-composer`)** — 입력창 + 도구줄. 바깥 2px 잉크 테두리. 바깥 묶음이 `:focus-within` 에서 표준 링을 받고, 안쪽 textarea 는 테두리·outline 이 없으며, 안쪽 버튼은 각자 `:focus-visible` 링을 갖는다(바깥 링과 함께 켜지는 것은 허용). 도구줄 = 안쪽 `.sd-actions`.
+**복합 입력(`.sd-composer`)** — 입력창 + 도구줄. 바깥 2px 잉크 테두리. **바깥 묶음은 포커스 링을 받지 않는다**(v0.6.1 — 포커스 링 내장 원칙의 유일한 예외): textarea 의 글자 커서가 포커스 표시이고, 굵은 잉크 테두리가 이미 "입력하는 곳"을 알린다(claude.ai·chatgpt.com 의 입력창과 같은 문법). 안쪽 textarea 는 테두리·outline 이 없고 `caret-color` 를 바꾸지 않는다. 안쪽 버튼은 각자 `:focus-visible` 링을 갖는다. 도구줄 = 안쪽 `.sd-actions`. 접근성 근거는 §9.
+
+**코드(`.sd-code`, v0.6.1)** — 인라인 `<code>` 와 블록 `<pre>` 에 같은 클래스를 쓴다. 면 = `surface-subtle`, 직각, 고정폭 글꼴(`--font-mono`, 없으면 시스템 고정폭). 블록은 줄을 바꾸지 않고 상자 안에서 가로로 스크롤한다 — 키보드로도 스크롤할 수 있게 블록에 `tabindex="0"` + `role="region"` + `aria-label`(예: 「코드」, 언어를 알면 「코드 · python」)을 준다(표 스크롤 상자와 같은 규격, 링 내장. 넘침을 감지해 붙였다 뗐다 하지 않는다). 블록 안의 `<code>` 는 면·여백을 다시 갖지 않는다. 복사 단추는 블록 바로 위나 아래의 `.sd-actions` 안에 `.sd-btn--ghost.sd-btn--sm` 으로 둔다(코드 위에 겹쳐 띄우지 않는다).
 
 **읽기판(`.sd-readout`)** — `<dl>` 안 `<div>` 행마다 `dt`(`ink-muted`, 7rem)·`dd`(잉크), 행 아래 `line` 1px. 폭이 모자라면 값이 라벨 아래로 내려간다(flex-wrap). KPI 숫자에 브랜드 밑줄을 쓰지 않는다.
 
@@ -183,19 +191,20 @@
 
 - **진행 표시** — 「{동사} 중…」 문구에 `role="status"` 를 주되, **초마다 바뀌는 경과초는 live region 밖에 둔다**. 화면낭독기에는 시작·완료·실패만 알린다.
 - **제자리 확인**(모달 없음) — `.sd-callout--strong` + `.sd-actions`. 확인 구획이 열리면 질문 문장(`tabindex="-1"`)으로 포커스를 옮기고, 취소·완료하면 원래 버튼으로 되돌린다. 실행 중 반복 실행을 막는다. 흐름 안 결과 문구에는 `role="status"`.
+- **대화 본문(에이전트·모델이 쓴 마크다운)**(v0.6.1) — 새 클래스 없이 기존 규격에 대응시킨다: 표 → `.sd-table-wrap` + `.sd-table` · 인용 → `.sd-callout` · 링크 → `.brand-underline` · 코드 → `.sd-code` · 접이식 → `.sd-details`. 원시 HTML 은 해석하지 않고 글자로 보인다. 역할 구분은 §16-8.
 - **파괴적 행동** — 실행 버튼은 언제나 잉크(solid). 라벨 = 동사 + 대상(+수량). 되돌릴 수 있으면 색 없음. 되돌릴 수 없으면 확인 구획을 `.sd-callout--error` 로 열고 첫 줄에 「되돌릴 수 없습니다」(`.sd-status--error`). 빨강 버튼 면은 쓰지 않는다.
 
 ### base.css
 `color-scheme: light` 강제 · `::selection` 브랜드 틴트 · **폼 컨트롤 직각 강제**(브라우저 기본 라운딩 제거 — Safari search 입력 포함) · 네이티브 컨트롤 `accent-color: ink` · `.brand-ring`(포커스: surface 갭 → **ink 고대비 링**(주 표시) → brand halo(보조), outline 은 투명으로 남겨 강제 색상 모드에서 보이게) · `.brand-underline`(텍스트 링크 표준: 브랜드색 밑줄, 두께 `from-font`, offset 3px) · 위의 `sd-*` 클래스 전부. **레이어로 감싸지 않는다** — 가져오는 방법은 §17.
 
-포커스 링을 내장한 것은 조작 클래스뿐이다: `sd-btn`·`sd-field`·`sd-tab`·`sd-list-item`·`sd-details > summary`·`sd-block-link`·표 정렬 단추·`sd-table-wrap`(키보드 스크롤 상자)·`sd-composer`(`:focus-within`)·체크박스·라디오. 이들에는 `brand-ring` 을 따로 붙이지 않는다. 보조 클래스(`sd-target` 등)와 그 밖의 커스텀 인터랙티브 요소에는 `brand-ring` 을 함께 쓴다(예: BackLink = `sd-target brand-underline brand-ring`).
+포커스 링을 내장한 것은 조작 클래스뿐이다: `sd-btn`·`sd-field`·`sd-tab`·`sd-list-item`·`sd-details > summary`·`sd-block-link`·표 정렬 단추·`sd-table-wrap`(키보드 스크롤 상자)·`pre.sd-code`(넘치는 코드 블록)·`.prose` 본문 링크·체크박스·라디오. `sd-composer` 바깥 묶음은 링을 받지 않는다(위 복합 입력, v0.6.1). 이들에는 `brand-ring` 을 따로 붙이지 않는다. 보조 클래스(`sd-target` 등)와 그 밖의 커스텀 인터랙티브 요소에는 `brand-ring` 을 함께 쓴다(예: BackLink = `sd-target brand-underline brand-ring`).
 
 **텍스트 링크 규칙**: 본문 속 링크는 `.brand-underline` 하나로 통일. `underline` 단독 사용 금지. 문장 밖에 홀로 선 링크는 `.sd-target` 을 함께 쓴다.
 
 ### prose.css (긴 글 영역)
 `@tailwindcss/typography` 플러그인을 쓰는 소비처 전용 토큰 글루(v0.2.0). `tokens.css`·`base.css` 다음에 import.
 - 플러그인의 gray 팔레트 변수(`--tw-prose-*`) 전체를 시맨틱 토큰으로 강제(body/headings=ink · counters/bullets/captions=ink-faint · hr/borders=line · pre 배경=surface-subtle).
-- 제목 크기·굵기를 6단 스케일로 정렬(§4), 링크는 brand-underline과 동일 시각, 코드 블록 라운딩 제거(직각).
+- 제목 크기·굵기를 6단 스케일로 정렬(§4), 링크는 brand-underline과 동일 시각(포커스 링은 base.css 링 목록의 `.prose a` — v0.6.1), 코드 블록 라운딩 제거(직각).
 - `max-width: none` — 폭은 PageShell이 유일하게 결정(§5). `prose-invert`·`prose-neutral` 등 플러그인 변형 클래스 사용 금지.
 - `.prose` 안에 `sd-*` 부품을 두면 typography 규칙(utilities 층)이 부품을 이긴다 → 부품은 `not-prose` 로 감싼다(§17).
 
@@ -217,14 +226,14 @@
 ## 9. 접근성 기준
 
 - 텍스트 대비 ≥4.5:1 (토큰이 보장 — `ink-faint`가 하한), 그래픽 ≥3:1.
-- 모든 인터랙티브 요소에 포커스 링 — 조작 클래스(§6 base.css 목록)는 내장, 보조 클래스(`sd-target` 등)와 그 밖의 커스텀 요소는 `brand-ring` 의무. 포커스 주 표시는 ink 고대비 링(≥3:1), **brand 단독 포커스 링 금지**(대비 1.36:1 미달).
+- 모든 인터랙티브 요소에 포커스 링(예외 = 복합 입력의 바깥 묶음, 아래 "복합 컨트롤 포커스") — 조작 클래스(§6 base.css 목록)는 내장, 보조 클래스(`sd-target` 등)와 그 밖의 커스텀 요소는 `brand-ring` 의무. 포커스 주 표시는 ink 고대비 링(≥3:1), **brand 단독 포커스 링 금지**(대비 1.36:1 미달).
 - 터치/클릭 타깃: 버튼 md 40px 기준(sm은 보조 액션 한정). 문장 밖에 홀로 서는 텍스트 링크(BackLink·목록형 링크 등)는 크기 ≥24×24px 확보(WCAG 2.2 2.5.8 AA) — BackLink는 `.sd-target` 내장(§6), 커스텀 단독 링크도 `.sd-target` 으로 양축을 보장한다. 본문 문장 속 링크는 인라인 예외 — 줄 높이에 종속되므로 24px을 강제하지 않는다.
 - 색 단독 정보 전달 금지(§1-4). 상태 변형(`--error`·`--attention`)은 언제나 문구를 함께 쓴다 — 인셋 안내는 첫 줄에 같은 뜻의 `.sd-status` 문구를 둔다.
 - **강제 색상(고대비) 모드**(v0.6.0): 이 모드는 `box-shadow` 와 그라데이션 배경을 지우고 면을 시스템 색으로 바꾸지만 `border`·`outline` 은 시스템 색으로 그린다. 그래서 ① 포커스는 `outline` 을 지우지 않고 투명으로 둔다(이 모드에서 보인다) ② 버튼은 투명 1px 테두리를 갖는다 ③ 상태 표지는 `border` 로 그린다 ④ 셀렉트는 이 모드에서 네이티브 화살표로 돌아간다. 목록 행·탭의 선택선은 투명 테두리를 쓰지 않는다(이 모드에서 모든 행에 선이 생긴다) — 선택된 것만 테두리를 갖고 나머지는 padding 으로 자리를 맞춘다.
-- 복합 컨트롤 포커스: 바깥 묶음(`:focus-within`)과 안쪽 조작 요소(`:focus-visible`)가 각자 링을 갖는다.
+- 복합 컨트롤 포커스: 안쪽 조작 요소(`:focus-visible`)가 각자 링을 갖는다. **예외 — 복합 입력(`.sd-composer`)의 바깥 묶음에는 링이 없다**(v0.6.1): 글자 커서가 보이는 textarea 는 WCAG 2.4.7(AA)을 충족한다(W3C Understanding 2.4.7 의 예 "a vertical bar is displayed in the field"). 2.4.13(AAA 포커스 모양)은 충족하지 않음을 알고 받아들인다. 마우스 클릭에도 textarea 는 `:focus-visible` 이 되므로 "키보드일 때만 링"은 스크립트 없이 만들 수 없어 쓰지 않는다.
 - 아이콘 전용 버튼은 `aria-label` 필수.
 - 포커스 이동과 복귀: 제자리 확인 구획·오류 요약이 나타나면 그 제목(질문 문장)으로 포커스를 옮기고, 확인 구획을 닫으면 원래 버튼으로 되돌린다.
-- 넓은 표의 스크롤 상자(`.sd-table-wrap`)는 키보드로 스크롤할 수 있게 `tabindex="0"` + `role="region"` + `aria-label` 을 준다.
+- 넓은 표의 스크롤 상자(`.sd-table-wrap`)와 코드 블록(`pre.sd-code`, v0.6.1)은 키보드로 스크롤할 수 있게 `tabindex="0"` + `role="region"` + `aria-label` 을 준다.
 
 ## 10. 브랜드 위계
 
