@@ -1,4 +1,4 @@
-/* AUTO-GENERATED from registry/ui/base.css — 손으로 편집하지 말 것. (sidoyu-design v0.7.2) */
+/* AUTO-GENERATED from registry/ui/base.css — 손으로 편집하지 말 것. (sidoyu-design v0.7.3) */
 /* sidoyu design system — base.css (소스. 소비처는 빌드가 버전 도장을 찍은 dist/base.css 를 복사한다)
  * 모양의 유일한 정본. 순수 CSS — Tailwind 소비처는 dist/tokens.css 다음에, 일반 CSS 소비처는 dist/tokens.vars.css 다음에 import 한다.
  * 레이어로 감싸지 않는다 — 일반 CSS 소비처에서는 보통의 선택자 우선순위로 동작한다(소비처의 레이어 밖 초기화에 지지 않는다).
@@ -292,7 +292,9 @@ input[type="radio"]:focus-visible {
   width: 100%;
   border: 2px solid var(--color-ink);
   background: transparent;
-  padding: 0.5rem 0.75rem;
+  /* 한 줄 높이 = 테두리 2 + 여백 6 + 줄 24 + 여백 6 + 테두리 2 = 40px = 버튼 md(2.5rem) — 같은 줄의 버튼과 높이가 같다(v0.7.3).
+     여백을 「0.5rem - 테두리」로 적어 기본 글자 크기를 키운 브라우저에서도 합이 2.5rem 으로 버튼과 같이 커진다 */
+  padding: calc(0.5rem - 2px) 0.75rem;
   font: inherit;
   /* 16px — 아이폰 Safari 는 16px 미만 입력칸에 포커스가 오면 화면을 확대한다(v0.7.0) */
   font-size: 1rem;
@@ -303,6 +305,8 @@ input[type="radio"]:focus-visible {
   color: var(--color-ink-faint);
 }
 textarea.sd-field {
+  /* 여러 줄 입력칸은 높이를 버튼에 맞출 일이 없어 위아래 여백 8px 를 유지한다 */
+  padding-block: 0.5rem;
   min-height: 7rem;
   resize: vertical;
 }

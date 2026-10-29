@@ -133,7 +133,9 @@
 - 버튼 묶음은 `.sd-actions`(가로 줄바꿈, 간격 8px). 크기 혼용 금지는 위 size 규칙.
 
 ### Input / Textarea (`.sd-field`)
-굵은 잉크 2px 테두리 · 투명 배경 · 패딩 8px/12px · `text-base`(16px — 아이폰 입력 확대 방지, v0.7.0) · placeholder `ink-faint` · 내장 포커스 링(직각 — **굵은 잉크 테두리는 "입력하는 곳"이라는 기능 신호**, gov.uk 문법. v0.4.0). Textarea 는 최소 높이 112px · 세로 크기 조절. 셀렉트는 `select.sd-field`(직각 화살표를 그리고, 강제 색상 모드에서는 네이티브 화살표로 되돌린다). 라벨은 `.sd-label`(`text-xs font-medium text-ink-muted`) + `gap-2`.
+굵은 잉크 2px 테두리 · 투명 배경 · 패딩 6px/12px(Textarea 는 8px/12px) · `text-base`(16px — 아이폰 입력 확대 방지, v0.7.0) · placeholder `ink-faint` · 내장 포커스 링(직각 — **굵은 잉크 테두리는 "입력하는 곳"이라는 기능 신호**, gov.uk 문법. v0.4.0). Textarea 는 최소 높이 112px · 세로 크기 조절. 셀렉트는 `select.sd-field`(직각 화살표를 그리고, 강제 색상 모드에서는 네이티브 화살표로 되돌린다). 라벨은 `.sd-label`(`text-xs font-medium text-ink-muted`) + `gap-2`.
+
+**한 줄 입력칸의 높이 = 버튼 md 40px**(v0.7.3): 한 줄 글 입력칸(`input.sd-field`)과 버튼이 한 줄에 놓이면(검색칸 + [검색], 찾기칸 + 이전·다음 아이콘 단추) 높이가 같아야 한다. base.css 가 테두리 2 + 여백 6 + 줄 24 + 여백 6 + 테두리 2 로 40px 를 맞춰 두고(여백 = `calc(0.5rem - 2px)` 라 기본 글자 크기를 키워도 버튼 2.5rem 과 같이 커진다), 소비처는 높이·여백을 다시 적지 않는다. 정하지 않은 것: 셀렉트(`select.sd-field`)는 브라우저가 높이를 정하는 부분이 있어(강제 색상 모드의 네이티브 모양 포함) 이 보장에 넣지 않는다 — 버튼 옆에 셀렉트를 두는 소비처가 생기면 그때 Safari·Chrome 에서 재고 정한다. 입력칸 옆 버튼은 md 를 쓴다(sm 32px 는 입력칸과 한 줄에 두지 않는다 — 위 「한 묶음 안에서는 크기를 섞지 않는다」의 연장). 계기 = v0.7.0 에서 입력칸 글자를 16px 로 올리며 한 줄 입력칸이 44px 가 되어 옆 버튼(40px)과 어긋난 실측(local-llm 18080 검색칸 2곳, 2026-10-30).
 
 상태: disabled = `opacity-40`(버튼과 같은 값) · **에러 = `aria-invalid="true"` → 테두리만 `error`**(v0.6.0) · 포커스 = 내장 링.
 
