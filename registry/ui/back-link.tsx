@@ -1,4 +1,4 @@
-// sidoyu-design v0.6.1 — 모양 정본 = base.css 의 sd-* 클래스 (이 줄은 빌드가 갱신)
+// sidoyu-design v0.7.0 — 모양 정본 = base.css 의 sd-* 클래스 (이 줄은 빌드가 갱신)
 import Link from "next/link";
 
 /**
@@ -8,8 +8,8 @@ import Link from "next/link";
  */
 export function BackLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <p className="text-xs text-ink-faint">
-      <Link href={href} className="sd-target brand-underline brand-ring">
+    <p className="sd-meta">
+      <Link href={href} className="sd-target brand-underline">
         ← {children}
       </Link>
     </p>

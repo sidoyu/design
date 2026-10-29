@@ -7,6 +7,8 @@
  *   dist/tokens.css        — Tailwind 4 @theme 블록 (emitCss=false 그룹 제외)
  *   dist/tokens.vars.css   — 같은 이름의 :root 변수 (일반 CSS 소비처용, v0.6.0)
  *   dist/base.css          — registry/ui/base.css 복사본 + 첫 줄 버전 도장 (v0.6.0 — 도장은 여기 한 곳)
+ *   dist/prose.css         — registry/ui/prose.css 복사본 + 버전 도장 (v0.7.0)
+ *   dist/design-check.sh   — scripts/design-check.sh 복사본 + 버전 도장 (v0.7.0)
  *   dist/chart-palette.ts  — 차트 전용 팔레트 (앱에 복사해 사용)
  *   dist/tokens.flat.json  — 평면 맵 (Figma 변수 생성·기타 플랫폼용)
  */
@@ -41,7 +43,7 @@ for (const name of ["brand-hover", "brand-selection"]) {
 }
 
 // ── dist/tokens.css
-const CSS_NAMESPACE = { color: "color", container: "container" };
+const CSS_NAMESPACE = { color: "color", container: "container", font: "font" };
 const lines = [];
 for (const [groupName, ns] of Object.entries(CSS_NAMESPACE)) {
   const group = tokens[groupName];
@@ -69,6 +71,20 @@ ${lines.join("\n")}
 const baseSrc = readFileSync(join(root, "registry", "ui", "base.css"), "utf8");
 const baseCss = `/* AUTO-GENERATED from registry/ui/base.css — 손으로 편집하지 말 것. (sidoyu-design v${tokens.meta.version}) */
 ${baseSrc}`;
+
+// ── dist/prose.css · dist/design-check.sh (v0.7.0 — 소비처가 복사하는 파일은 모두 dist/ 에서 도장과 함께 나간다)
+const proseSrc = readFileSync(join(root, "registry", "ui", "prose.css"), "utf8");
+const proseCss = `/* AUTO-GENERATED from registry/ui/prose.css — 손으로 편집하지 말 것. (sidoyu-design v${tokens.meta.version}) */
+${proseSrc}`;
+const checkSrc = readFileSync(join(root, "scripts", "design-check.sh"), "utf8");
+if (!checkSrc.startsWith("#!/usr/bin/env bash\n")) {
+  console.error("[build-tokens] FAIL: scripts/design-check.sh 첫 줄이 #!/usr/bin/env bash 가 아닙니다");
+  process.exit(1);
+}
+const checkSh = checkSrc.replace(
+  "#!/usr/bin/env bash\n",
+  `#!/usr/bin/env bash\n# AUTO-GENERATED from scripts/design-check.sh — 손으로 편집하지 말 것. (sidoyu-design v${tokens.meta.version})\n`,
+);
 
 // ── dist/chart-palette.ts
 const tsObj = (group) =>
@@ -113,6 +129,8 @@ mkdirSync(join(root, "dist"), { recursive: true });
 writeFileSync(join(root, "dist", "tokens.css"), css);
 writeFileSync(join(root, "dist", "tokens.vars.css"), varsCss);
 writeFileSync(join(root, "dist", "base.css"), baseCss);
+writeFileSync(join(root, "dist", "prose.css"), proseCss);
+writeFileSync(join(root, "dist", "design-check.sh"), checkSh, { mode: 0o755 });
 writeFileSync(join(root, "dist", "chart-palette.ts"), chartTs);
 writeFileSync(join(root, "dist", "tokens.flat.json"), JSON.stringify({ version: tokens.meta.version, tokens: flat }, null, 2) + "\n");
 
@@ -126,4 +144,4 @@ for (const file of readdirSync(uiDir).filter((f) => f.endsWith(".tsx"))) {
   const next = stamp + src.replace(STAMP_RE, "");
   if (next !== src) writeFileSync(path, next);
 }
-console.log(`[build-tokens] OK: dist/tokens.css·tokens.vars.css(${lines.length} vars), base.css, chart-palette.ts, tokens.flat.json(${Object.keys(flat).length} tokens)`);
+console.log(`[build-tokens] OK: dist/tokens.css·tokens.vars.css(${lines.length} vars), base.css, prose.css, design-check.sh, chart-palette.ts, tokens.flat.json(${Object.keys(flat).length} tokens)`);

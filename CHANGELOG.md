@@ -9,6 +9,28 @@
 
 소비처는 `main`이 아니라 **버전 태그를 고정**해서 가져간다. 버전을 올릴 땐 breaking 항목에 마이그레이션 메모를 함께 적는다.
 
+## v0.7.0 — 2026-10-29
+
+**minor** — v0.6.1 독립 감사(마기 3자 + Codex 보충 회차, `claude-ops/handoffs/sidoyu-design/magi-20261029-audit/synthesis.md` §6)의 결론과 소유자 결정 2건. 일반 CSS 소비처 두 곳(로컬 에이전트 대화창·로그 대시보드)이 기대는 전달 경로의 빈칸, 소비처가 각자 만든 요소의 미정의, 문서·CSS·검사 사이의 어긋남을 고쳤다.
+
+- **소유자 결정 2건(2026-10-29)**: ① 화면 문구 어미 = 합니다체(§16-6) ② 대화의 사용자 발화 = 오른쪽 + `surface-subtle` 면(`.sd-user-turn`, 직각) · 보이는 「나」 라벨 없음 · 화면낭독기용 `<span class="sd-vh">나:</span>`(§16-8 개정, §1-3-2·§1-4 에 예외 한 줄씩). v0.6.0 의 "말풍선 면으로 역할을 가르지 않는다"를 뒤집는다 — Claude·ChatGPT 앱과 같은 관례가 사용자 친화성에서 앞선다는 판단.
+- **토큰**: 글꼴 스택 `--font-sans`·`--font-mono` 를 발행(새 `font` 그룹, 한글 폴백 포함) · 차트 선·범례 색 3:1 미달 2개 조정(`gpt-api` #0EA5E9→#0369A1 · `other`·`cache-write` #A3A3A3→#8A8A8A) · 토큰 설명문 정리.
+- **base.css 새 클래스 6**: `.sd-layer`(+`::backdrop` — 서랍·패널·모달, 네이티브 dialog, 사면 잉크 1px) · `.sd-range`(sidoyu.com `.range-ink` 를 옮김) · `.sd-user-turn` · `.sd-prose`(일반 CSS 용 긴 글) · `.sd-block-title`·`.sd-block-desc`(Card 의 tsx 에서 옮김).
+- **base.css 동작 변경**: `[hidden]` 이 언제나 이김 · `body` 글꼴 = `--font-sans` · 호버를 `@media (hover: hover)` 안으로(터치 기기 잔상 제거) · `.sd-field` 16px(아이폰 입력 확대 방지) · 텍스트 링크(`.brand-underline`·`.sd-prose a`) 포커스 링 내장 + 글자색 = 둘레(일반 CSS 에서 브라우저 기본 파랑이 나오지 않게) · `.sd-vh` 가 키보드 포커스를 받으면 드러남(건너뛰기 링크) · 아이콘 획(`fill: none` · `stroke: currentColor` · 1.75)과 sm 버튼 아이콘 16px · `.sd-num` Geist Mono · `.sd-code` 인라인 = 둘레 크기 상속 / 블록 = 14px · 복합 입력 textarea outline 투명.
+- **prose.css**: 표 머리선 = 잉크 · `kbd` 라운딩·그림자 제거.
+- **React**: `TableWrap` 신설(9종) · Card 제목·설명 = 새 클래스 · BackLink = `.sd-meta` + 링 내장 링크(`brand-ring` 불필요) · Segmented 라벨 = `.sd-label`.
+- **발행물 +2**: `dist/prose.css`·`dist/design-check.sh`(버전 도장). 판 번호는 `tokens.json` 한 곳 — package.json 의 version 과 DESIGN.md 머리의 판 번호를 지웠다.
+- **design-check**: 변형 접두(`sm:`·`hover:`)·작은따옴표·백틱 경계 · 클래스 순서 무관한 사면 박스 · `text-xl` · 토큰 투명도 일반화(`text-ink/40` 등) · 움직임(`transition-all`·`animate-spin` 등) · CSS 선언(0 이 아닌 `border-radius`·`box-shadow`·그라데이션·다크 미디어 질의) · 패턴별 예외(base.css 정본의 포커스 링·셀렉트 화살표) · AUTO-GENERATED 사본 건너뜀 · `.html` 검사 · 경로 인자 여러 개(일반 CSS 소비처는 실제 소스 경로) · 허용 목록 주석을 실제 동작("경로:줄:내용")에 맞춤.
+- **DESIGN.md**: §1(그라데이션 금지·기능 테두리 세 가지 열거·넓은 면 예외 둘) · §2(지원 범위·인벤토리를 도장 포인터로) · §3 · §4(글꼴 스택·입력 16px·굵기 넷·줄간격 규칙과 코드 블록 예외) · §5(간격 px 병기·머리글 링크와 내비게이션·건너뛰기·겹침 순서 = 10·20 + dialog top layer·안전 영역) · §6(TableWrap·읽기 전용 결과 = `pre.sd-code`·오류 요약 조건 "하나 이상"·전역 알림·넓은 표의 뜻·접이식 판정 시점·복합 입력 링 기준·슬라이더·떠 있는 층·사용자 발화·긴 글·파일 첨부·대화 본문 그림·실행 전 「되돌릴 수 없습니다」= `attention`) · §7(차트 3:1) · §8(호버 피드백 정리·스켈레톤 1초·모션 줄이기) · §9(title 툴팁·비활성 대비·호버·스크롤 여백·320px·200% 확대) · §11 · §12(검사 열) · §13(그림자·z-index·2층화·shadcn·npm 이유 갱신 + 트리거 7행) · §14·§15·§16·§17(웹폰트 로딩·검사 경로).
+- **완료 검토(Codex 4b) 반영**: `.sd-prose` 안쪽 규칙을 `:where()` 로 낮춰 본문 안 `sd-*` 부품이 이기게 · `.sd-user-turn` `border-box` · 강제 색상 모드에서 슬라이더 트랙·손잡이를 시스템색으로 · 긴 글 줄간격 1.75(typography 와 같게)·사용자 발화 24px · design-check 실행 오류(없는 경로·grep 오류) = exit 3, here-string·프로세스 치환 제거, CSS 선언을 선언 단위로 판정(같은 줄의 허용 선언이 금지 선언을 가리지 않게)·콜론 앞 공백, 변형 접두가 붙은 사면 박스.
+- **버튼 크기 혼용 금지**(§6 Button, 소유자 지적 2026-10-29): 한 `.sd-actions` 줄 안에서 md·sm 을 섞지 않는다 — 시험 화면에서 높이가 들쭉날쭉해 보인 원인.
+- **정정**: v0.6.1 은 새 클래스(`.sd-code`)를 더했으므로 규칙상 minor 였다. 태그는 고치지 않고 이번 판을 v0.7.0 으로 올린다.
+
+마이그레이션: `dist/` 의 tokens(.css/.vars.css)·base.css·prose.css·design-check.sh 와 `registry/ui/*.tsx` 를 다시 복사한다. 소비처에서 할 일 —
+- **공통**: 숨김을 지키려고 둔 `[hidden] { display: none !important }` 사본을 지운다 · 아이콘 획·스크림 투명도·글꼴 스택을 소비처 CSS 에 적은 곳을 지운다(채운 도형 아이콘은 그 도형에만 `fill: currentColor`) · 실행 전 「되돌릴 수 없습니다」 구획을 `--attention` 으로 바꾼다 · 화면 문구를 합니다체로 맞춘다.
+- **sidoyu.com**: `.range-ink` → `.sd-range`(globals.css 사본 삭제) · 글꼴 glue 에 한글 폴백을 넣고 next/font `variable` 클래스를 `<body>` 에서 `<html>` 로 옮긴다(§11) · `app/ai/page.tsx` 의 `text-xl` 2곳 → `text-lg`(새 검사가 잡는다) · `readOnly` 결과칸 2곳(crypt·mathscript) → `pre.sd-code` + 복사 · 표 스크롤 상자 → `TableWrap` · 허용 목록의 낡은 세그먼트 줄 정리.
+- **대화 화면**: 사용자 발화 = `.sd-user-turn` + 오른쪽 배치 + `sd-vh` 「나:」 · 답 = `.sd-prose` · 서랍 = `<dialog class="sd-layer">` · 건너뛰기 링크 · 첨부 = §6 파일 첨부.
+
 ## v0.6.1 — 2026-10-29
 
 **patch** — 대화 화면(18090 로컬 에이전트)에 v0.6.0 을 들이기 전에 고친 5건 + 소비처 인계 후속 2건. 근거: 18090 화면 개선 마기(2026-10-29 · `claude-ops/handoffs/local-llm/display-magi-20261029/synthesis.md`)와 sidoyu.com 적용 인계(`S6-consumer-handoff.md` §2-1·§4).

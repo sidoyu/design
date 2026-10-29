@@ -1,4 +1,4 @@
-/* AUTO-GENERATED from tokens/tokens.json — 손으로 편집하지 말 것. (sidoyu-design v0.6.1)
+/* AUTO-GENERATED from tokens/tokens.json — 손으로 편집하지 말 것. (sidoyu-design v0.7.0)
  * 데이터 시각화 전용 팔레트. UI 색은 tokens.css의 시맨틱 토큰을 사용할 것. */
 export const FAMILY_COLORS: Record<string, string> = {
   "claude-fable": "#D97706",
@@ -7,11 +7,11 @@ export const FAMILY_COLORS: Record<string, string> = {
   "claude-haiku": "#0891B2",
   "codex": "#EA580C",
   "claude-api": "#7C3AED",
-  "gpt-api": "#0EA5E9",
+  "gpt-api": "#0369A1",
   "gemini": "#DB2777",
   "grok": "#525252",
   "replicate": "#E11D48",
-  "other": "#A3A3A3",
+  "other": "#8A8A8A",
 };
 
 export const HEATMAP_LEVELS: string[] = [
@@ -26,7 +26,7 @@ export const TOKEN_COMPOSITION: Record<string, string> = {
   "input": "#4F46E5",
   "output": "#16A34A",
   "cache-read": "#0891B2",
-  "cache-write": "#A3A3A3",
+  "cache-write": "#8A8A8A",
 };
 
 export const CHART_AXIS = {

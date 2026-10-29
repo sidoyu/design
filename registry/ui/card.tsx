@@ -1,4 +1,4 @@
-// sidoyu-design v0.6.1 — 모양 정본 = base.css 의 sd-* 클래스 (이 줄은 빌드가 갱신)
+// sidoyu-design v0.7.0 — 모양 정본 = base.css 의 sd-* 클래스 (이 줄은 빌드가 갱신)
 import Link from "next/link";
 import { cx } from "./cx";
 
@@ -22,8 +22,8 @@ export function Card({ href, eyebrow, title, description, className, children }:
   const inner = (
     <>
       {eyebrow ? <p className="sd-eyebrow">{eyebrow}</p> : null}
-      {title ? <h2 className="mt-2 text-lg font-semibold">{title}</h2> : null}
-      {description ? <p className="mt-1 text-sm text-ink-muted">{description}</p> : null}
+      {title ? <h2 className="sd-block-title mt-2">{title}</h2> : null}
+      {description ? <p className="sd-block-desc mt-1">{description}</p> : null}
       {children}
     </>
   );

@@ -1,7 +1,8 @@
 /* sidoyu design system — prose.css
  * 긴 글(.prose) 영역 토큰 글루 — @tailwindcss/typography 플러그인을 쓰는 소비처 전용.
  * tokens.css·base.css 다음에 import 한다. 순수 CSS·비레이어 — typography 유틸리티(@layer)보다 항상 우선.
- * 역할: 플러그인의 gray 기본 팔레트·자체 타입 스케일을 시맨틱 토큰·6단 스케일로 강제한다. */
+ * 역할: 플러그인의 gray 기본 팔레트·자체 타입 스케일을 시맨틱 토큰·6단 스케일로 강제한다.
+ * 일반 CSS·생성 HTML 소비처는 이 파일 대신 base.css 의 .sd-prose 를 쓴다(v0.7.0). */
 
 .prose {
   /* 색 — 전부 시맨틱 토큰 (라이트 전용이므로 invert 변수는 정의하지 않는다) */
@@ -20,7 +21,7 @@
   --tw-prose-code: var(--color-ink);
   --tw-prose-pre-code: var(--color-ink);
   --tw-prose-pre-bg: var(--color-surface-subtle);
-  --tw-prose-th-borders: var(--color-line);
+  --tw-prose-th-borders: var(--color-ink); /* 머리·몸 경계 = 잉크 1px(공통 표 .sd-table 과 같음, v0.7.0) */
   --tw-prose-td-borders: var(--color-line);
 
   /* 폭은 PageShell이 유일하게 결정한다(DESIGN.md §5) — 플러그인의 65ch 제한 해제 */
@@ -57,4 +58,11 @@
 /* 코드 블록 — 플러그인 기본 라운딩(0.375rem) 제거: 직각 모서리(v0.3.0 플랫 전환) */
 .prose :where(pre):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
   border-radius: 0;
+}
+
+/* 키 표시 — 플러그인 기본의 라운딩·그림자 제거(직각·플랫, v0.7.0). 면은 코드와 같은 surface-subtle */
+.prose :where(kbd):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  border-radius: 0;
+  box-shadow: none;
+  background: var(--color-surface-subtle);
 }
