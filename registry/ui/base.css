@@ -221,6 +221,8 @@ input[type="radio"]:focus-visible {
   font-size: 0.875rem;
   line-height: 1.25rem;
   font-weight: 500;
+  /* 높이가 고정이라 글자가 꺾이면 버튼 밖으로 넘친다 — 자리가 모자라면 배치로 푼다(v0.7.1, DESIGN §6) */
+  white-space: nowrap;
   text-decoration: none;
   cursor: pointer;
   transition: background-color 150ms;
@@ -468,7 +470,7 @@ select.sd-field {
   min-height: 1.5rem;
   cursor: pointer;
 }
-/* 업무상 유휴 행 = 잉크 농담(ink-muted 8.5:1). 비활성 컨트롤이 아니므로 opacity·ink-faint 아래로 흐리지 않는다 */
+/* 업무상 유휴 행 = 잉크 농담(ink-muted 8.5:1). 비활성 컨트롤이 아니므로 opacity·ink-faint 로 흐리지 않는다 */
 .sd-row--idle {
   color: var(--color-ink-muted);
 }

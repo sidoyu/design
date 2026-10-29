@@ -1,4 +1,4 @@
-/* AUTO-GENERATED from registry/ui/base.css — 손으로 편집하지 말 것. (sidoyu-design v0.7.0) */
+/* AUTO-GENERATED from registry/ui/base.css — 손으로 편집하지 말 것. (sidoyu-design v0.7.1) */
 /* sidoyu design system — base.css (소스. 소비처는 빌드가 버전 도장을 찍은 dist/base.css 를 복사한다)
  * 모양의 유일한 정본. 순수 CSS — Tailwind 소비처는 dist/tokens.css 다음에, 일반 CSS 소비처는 dist/tokens.vars.css 다음에 import 한다.
  * 레이어로 감싸지 않는다 — 일반 CSS 소비처에서는 보통의 선택자 우선순위로 동작한다(소비처의 레이어 밖 초기화에 지지 않는다).
@@ -222,6 +222,8 @@ input[type="radio"]:focus-visible {
   font-size: 0.875rem;
   line-height: 1.25rem;
   font-weight: 500;
+  /* 높이가 고정이라 글자가 꺾이면 버튼 밖으로 넘친다 — 자리가 모자라면 배치로 푼다(v0.7.1, DESIGN §6) */
+  white-space: nowrap;
   text-decoration: none;
   cursor: pointer;
   transition: background-color 150ms;
@@ -469,7 +471,7 @@ select.sd-field {
   min-height: 1.5rem;
   cursor: pointer;
 }
-/* 업무상 유휴 행 = 잉크 농담(ink-muted 8.5:1). 비활성 컨트롤이 아니므로 opacity·ink-faint 아래로 흐리지 않는다 */
+/* 업무상 유휴 행 = 잉크 농담(ink-muted 8.5:1). 비활성 컨트롤이 아니므로 opacity·ink-faint 로 흐리지 않는다 */
 .sd-row--idle {
   color: var(--color-ink-muted);
 }
