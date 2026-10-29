@@ -1,5 +1,5 @@
 {
-  "version": "0.5.2",
+  "version": "0.6.0",
   "tokens": {
     "color.brand": {
       "value": "#28FF35",
@@ -35,6 +35,14 @@
     },
     "color.line": {
       "value": "rgba(0, 0, 0, 0.10)",
+      "type": "color"
+    },
+    "color.error": {
+      "value": "#B3261E",
+      "type": "color"
+    },
+    "color.attention": {
+      "value": "#B45309",
       "type": "color"
     },
     "container.wide": {

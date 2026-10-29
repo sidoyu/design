@@ -5,10 +5,12 @@
  *
  * 산출물:
  *   dist/tokens.css        — Tailwind 4 @theme 블록 (emitCss=false 그룹 제외)
+ *   dist/tokens.vars.css   — 같은 이름의 :root 변수 (일반 CSS 소비처용, v0.6.0)
+ *   dist/base.css          — registry/ui/base.css 복사본 + 첫 줄 버전 도장 (v0.6.0 — 도장은 여기 한 곳)
  *   dist/chart-palette.ts  — 차트 전용 팔레트 (앱에 복사해 사용)
  *   dist/tokens.flat.json  — 평면 맵 (Figma 변수 생성·기타 플랫폼용)
  */
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -55,6 +57,19 @@ ${lines.join("\n")}
 }
 `;
 
+// ── dist/tokens.vars.css (일반 CSS 소비처 — tokens.css 와 같은 변수 이름·값)
+const varsCss = `/* AUTO-GENERATED from tokens/tokens.json — 손으로 편집하지 말 것. (sidoyu-design v${tokens.meta.version})
+ * 일반 CSS 소비처용. Tailwind 소비처는 tokens.css(@theme)를 쓴다 — 두 파일의 변수 이름은 같다. */
+:root {
+${lines.join("\n")}
+}
+`;
+
+// ── dist/base.css (모양 정본 복사 + 버전 도장. 소스에는 버전을 손으로 적지 않는다)
+const baseSrc = readFileSync(join(root, "registry", "ui", "base.css"), "utf8");
+const baseCss = `/* AUTO-GENERATED from registry/ui/base.css — 손으로 편집하지 말 것. (sidoyu-design v${tokens.meta.version}) */
+${baseSrc}`;
+
 // ── dist/chart-palette.ts
 const tsObj = (group) =>
   Object.entries(group)
@@ -96,6 +111,19 @@ const flat = {};
 
 mkdirSync(join(root, "dist"), { recursive: true });
 writeFileSync(join(root, "dist", "tokens.css"), css);
+writeFileSync(join(root, "dist", "tokens.vars.css"), varsCss);
+writeFileSync(join(root, "dist", "base.css"), baseCss);
 writeFileSync(join(root, "dist", "chart-palette.ts"), chartTs);
 writeFileSync(join(root, "dist", "tokens.flat.json"), JSON.stringify({ version: tokens.meta.version, tokens: flat }, null, 2) + "\n");
-console.log(`[build-tokens] OK: dist/tokens.css(${lines.length} vars), chart-palette.ts, tokens.flat.json(${Object.keys(flat).length} tokens)`);
+
+// ── registry/ui/*.tsx 첫 줄 버전 도장 — 소비처 복사본의 버전 식별용. 값은 tokens.meta.version 한 곳에서 온다.
+const STAMP_RE = /^\/\/ sidoyu-design v[^\n]*\n/;
+const stamp = `// sidoyu-design v${tokens.meta.version} — 모양 정본 = base.css 의 sd-* 클래스 (이 줄은 빌드가 갱신)\n`;
+const uiDir = join(root, "registry", "ui");
+for (const file of readdirSync(uiDir).filter((f) => f.endsWith(".tsx"))) {
+  const path = join(uiDir, file);
+  const src = readFileSync(path, "utf8");
+  const next = stamp + src.replace(STAMP_RE, "");
+  if (next !== src) writeFileSync(path, next);
+}
+console.log(`[build-tokens] OK: dist/tokens.css·tokens.vars.css(${lines.length} vars), base.css, chart-palette.ts, tokens.flat.json(${Object.keys(flat).length} tokens)`);

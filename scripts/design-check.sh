@@ -4,17 +4,21 @@
 # 소비 프로젝트에 이 파일을 복사하고 npm run design:check 로 연결한다.
 # 예외 허용: 검사루트의 .design-check.allow 에 "경로패턴" 한 줄씩 (grep -E, 파일경로 기준).
 #            빈 줄·#주석은 무시된다. 예외에는 반드시 # 사유를 함께 적을 것.
+# 종료 코드: 0 = 검사 대상이 있고 위반 0건 · 1 = 위반 발견 · 2 = 검사 대상 없음(통과로 세지 않는다, v0.6.0)
 set -u
 
 ROOT="${1:-.}"
 ALLOW_FILE="$ROOT/.design-check.allow"
 TARGETS=()
-for d in app components lib src; do
+for d in app components lib src registry; do
   [ -d "$ROOT/$d" ] && TARGETS+=("$ROOT/$d")
 done
-if [ ${#TARGETS[@]} -eq 0 ]; then
-  echo "[design-check] 검사할 디렉터리(app/components/lib/src)가 없습니다: $ROOT"
-  exit 0
+echo "[design-check] 검사 범위: tsx·ts·jsx·js·css (Python·생성 HTML 미검사)"
+FILE_COUNT=0
+[ ${#TARGETS[@]} -gt 0 ] && FILE_COUNT=$(find "${TARGETS[@]}" -type f \( -name '*.tsx' -o -name '*.ts' -o -name '*.css' -o -name '*.jsx' -o -name '*.js' \) 2>/dev/null | wc -l | tr -d ' ')
+if [ "$FILE_COUNT" -eq 0 ]; then
+  echo "[design-check] 검사 대상 없음 — 통과로 세지 않음(app/components/lib/src/registry 아래 tsx·ts·jsx·js·css 0개): $ROOT"
+  exit 2
 fi
 
 # allow 파일에서 빈 줄·주석 제거(빈 정규식이 모든 위반을 삼키는 사고 방지)
@@ -40,7 +44,10 @@ PATTERNS=(
   $'text-\\[\t임의 텍스트 크기 금지(타입 스케일 6단: xs·sm·base·lg·2xl·3xl)'
   $'[\'"`[:space:]](p|m)[tblrxy]?-\\[\t임의 간격 금지(Tailwind 4px 기본 스케일 사용)'
   $'[\'"`[:space:]](gap(-[xy])?|space-[xy])-\\[\t임의 간격 금지(gap·space — 4px 스케일 사용)'
-  $'(text|bg|border|decoration|ring|outline|fill|stroke|from|via|to|accent|caret|divide|placeholder)-(red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|slate|gray|zinc|neutral|stone)-[0-9]\tTailwind 팔레트 색 직접 사용 금지(시맨틱 토큰 — 차트 데이터 색은 chart-palette)'
+  $'(text|bg|border|decoration|ring|outline|fill|stroke|from|via|to|accent|caret|divide|placeholder)-(red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|slate|gray|zinc|neutral|stone)-[0-9]\tTailwind 팔레트 색 직접 사용 금지(시맨틱 토큰 — 상태색 = error·attention 토큰만 · 차트 데이터 색은 chart-palette)'
+  $'bg-(error|attention)\t상태색은 글자·선·표지에만(면 금지 — .sd-status·.sd-callout 사용)'
+  $'(border|outline|ring|decoration)-brand([^-]|$)\tbrand 선·단독 포커스 금지(선택 = 잉크, 포커스 = brand-ring, 링크 = brand-underline)'
+  $'bg-ink/\t잉크 투명도 직접 사용 금지(solid 호버는 .sd-btn 내부 구현)'
 )
 
 FAIL=0

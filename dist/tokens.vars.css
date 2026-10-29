@@ -1,0 +1,18 @@
+/* AUTO-GENERATED from tokens/tokens.json — 손으로 편집하지 말 것. (sidoyu-design v0.6.0)
+ * 일반 CSS 소비처용. Tailwind 소비처는 tokens.css(@theme)를 쓴다 — 두 파일의 변수 이름은 같다. */
+:root {
+  --color-brand: #28FF35;
+  --color-brand-hover: rgba(40, 255, 53, 0.12);
+  --color-brand-selection: rgba(40, 255, 53, 0.22);
+  --color-ink: #000000;
+  --color-ink-muted: rgba(0, 0, 0, 0.70);
+  --color-ink-faint: rgba(0, 0, 0, 0.55);
+  --color-surface: #FFFFFF;
+  --color-surface-subtle: rgba(0, 0, 0, 0.03);
+  --color-line: rgba(0, 0, 0, 0.10);
+  --color-error: #B3261E;
+  --color-attention: #B45309;
+  --container-wide: 64rem;
+  --container-reading: 48rem;
+  --container-narrow: 28rem;
+}

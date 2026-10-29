@@ -1,16 +1,9 @@
+// sidoyu-design v0.6.0 — 모양 정본 = base.css 의 sd-* 클래스 (이 줄은 빌드가 갱신)
 import { cx } from "./cx";
 
-/** 상태·태그 배지. 의미 색상(빨강/노랑 등)을 늘리지 말 것 — 기본형 하나만. */
+/** 분류 꼬리표 전용(모양 = base.css .sd-badge). 상태를 말하지 않는다 — 상태는 .sd-status(DESIGN §6). */
 type BadgeProps = React.ComponentProps<"span">;
 
 export function Badge({ className, ...props }: BadgeProps) {
-  return (
-    <span
-      className={cx(
-        "inline-flex items-center bg-surface-subtle px-2 py-0.5 text-xs text-ink-muted",
-        className
-      )}
-      {...props}
-    />
-  );
+  return <span className={cx("sd-badge", className)} {...props} />;
 }

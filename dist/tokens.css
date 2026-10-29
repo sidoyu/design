@@ -1,4 +1,4 @@
-/* AUTO-GENERATED from tokens/tokens.json — 손으로 편집하지 말 것. (sidoyu-design v0.5.2) */
+/* AUTO-GENERATED from tokens/tokens.json — 손으로 편집하지 말 것. (sidoyu-design v0.6.0) */
 @theme {
   --color-brand: #28FF35;
   --color-brand-hover: rgba(40, 255, 53, 0.12);
@@ -9,6 +9,8 @@
   --color-surface: #FFFFFF;
   --color-surface-subtle: rgba(0, 0, 0, 0.03);
   --color-line: rgba(0, 0, 0, 0.10);
+  --color-error: #B3261E;
+  --color-attention: #B45309;
   --container-wide: 64rem;
   --container-reading: 48rem;
   --container-narrow: 28rem;

@@ -1,17 +1,18 @@
+// sidoyu-design v0.6.0 — 모양 정본 = base.css 의 sd-* 클래스 (이 줄은 빌드가 갱신)
 import { cx } from "./cx";
 
-/** 입력 필드 공통 스타일. 입력류 마크업을 인라인으로 복제하지 말 것. */
-const FIELD_CLASS =
-  "w-full border-2 border-ink bg-transparent px-3 py-2 text-sm placeholder:text-ink-faint brand-ring disabled:opacity-40";
-
+/**
+ * 입력 필드(모양 = base.css .sd-field). 입력류 마크업을 인라인으로 복제하지 말 것.
+ * 오류 = aria-invalid="true"(테두리만 오류색) + .sd-error-msg 문구의 id 를 aria-describedby 로 연결(DESIGN §6).
+ */
 type InputProps = React.ComponentProps<"input">;
 
 export function Input({ className, ...props }: InputProps) {
-  return <input className={cx(FIELD_CLASS, className)} {...props} />;
+  return <input className={cx("sd-field", className)} {...props} />;
 }
 
 type TextareaProps = React.ComponentProps<"textarea">;
 
 export function Textarea({ className, ...props }: TextareaProps) {
-  return <textarea className={cx(FIELD_CLASS, "min-h-28 resize-y", className)} {...props} />;
+  return <textarea className={cx("sd-field", className)} {...props} />;
 }

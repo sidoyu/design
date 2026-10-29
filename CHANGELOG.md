@@ -9,6 +9,28 @@
 
 소비처는 `main`이 아니라 **버전 태그를 고정**해서 가져간다. 버전을 올릴 땐 breaking 항목에 마이그레이션 메모를 함께 적는다.
 
+## v0.6.0 — 2026-10-29
+
+**minor(breaking 포함, 0.x 관행)** — 모양 정본을 `base.css` 의 `sd-*` 클래스 한 장으로 모으고, 상태색 2개와 CSS 규격 12개를 더했다. 근거: React 전용 부품을 일반 CSS 소비처가 손으로 베끼며 이름·값이 갈라지던 구조(전달 통로 결손)와, 오류·판정 불가가 잉크로 접혀 정상과 구별되지 않던 문제.
+
+- **토큰 +2**: `error #B3261E`(흰 배경 6.54:1) · `attention #B45309`(5.02:1). 글자·가는 선·작은 표지에만 — 면·차트 금지. 두 색은 적록 색약 근사에서 거의 같으므로 상태는 문구 + 표지 모양(채운/빈 사각)으로 가른다. 토큰 설명문 6개 갱신(brand·ink-muted·ink-faint·surface·surface-subtle·line — 대비 수치 정정 포함).
+- **발행물 +2**: `dist/tokens.vars.css`(일반 CSS 용 `:root` 변수 — `tokens.css` 와 같은 이름·값) · `dist/base.css`(첫 줄 버전 도장). 빌드가 `registry/ui/*.tsx` 첫 줄 버전 도장도 갱신한다(버전은 `tokens.json` 한 곳).
+- **base.css = 모양의 유일한 정본**(레이어로 감싸지 않는다). 기존 7종의 모양을 `sd-page`·`sd-measure-*`·`sd-block`·`sd-block-link`·`sd-btn`(+`--ghost`·`--sm`)·`sd-field`·`sd-label`·`sd-badge`·`sd-eyebrow` 로 옮겼다(겉모습 같음).
+- **CSS 규격 12개 신설**: 상태 표기 `sd-status` · 인셋 안내 `sd-callout` · 칸 오류 `sd-error-msg` · 표 `sd-table`(+`sd-table-wrap`·`sd-num`·`sd-row--idle`) · 접이식 `sd-details` · 목록 행 `sd-list-item` · 탭·세그먼트 `sd-tabs`·`sd-tab` · 복합 입력 `sd-composer` · 읽기판 `sd-readout` · 폼 컨트롤(`accent-color: ink`·`select.sd-field`) · 아이콘 버튼 `sd-btn--icon` · 행동 묶음 `sd-actions`. 보조 `sd-meta`·`sd-icon`·`sd-target`·`sd-vh`.
+- **React**: 기존 7종은 API 그대로 안쪽 className 만 `sd-*` 로. Button·ButtonLink 에 선택값 `icon`(아이콘 전용 정사각, `aria-label` 타입 강제) 추가. **Segmented 신설**(8종) — 선택 표시 = 잉크 밑줄, 그룹 라벨 필수(`hideLabel` 로 화면에서만 숨김 가능).
+- **포커스 링 내장 범위**: 조작 클래스 전부(`sd-btn`·`sd-field`·`sd-tab`·`sd-list-item`·`sd-details` 머리줄·`sd-block-link`·표 정렬 단추·키보드 스크롤 상자 `sd-table-wrap`·`sd-composer`·체크·라디오). 보조 클래스(`sd-target` 등)에는 `brand-ring` 을 함께 쓴다.
+- **강제 색상(고대비) 모드**: 포커스 outline 을 투명으로 남김 · 버튼 투명 테두리 · 상태 표지 border · 셀렉트 네이티브 화살표 복원.
+- **design-check**: 패턴 +3(`bg-error|attention` · `border|outline|ring|decoration-brand` · `bg-ink/`) · 검사 대상에 `registry` 추가 · 검사 대상 없음 = **exit 2**(통과로 세지 않음) · 첫 줄 검사 범위 고지.
+- **DESIGN.md**: §1-2(brand = 정체성 포인트, 선택·역할·상태 표시 금지) · §1-3-2 · §1-4(구분 기능 선·면 = 잉크 또는 상태색) · §3 · §4 한글 폴백 · §5-1 작업 화면 배치(신설) · §6 전면 개정 · §7 차트 격리 양방향 · §8 진행 표시 · §9 강제 색상 모드 외 · §11 · §12 · §13 · §16 상태 표기와 문구(신설) · §17 환경별 전달(신설). 공식 예외 "`hover:bg-ink/80` 내부 전용" 삭제(호버가 CSS 안으로 들어감).
+
+**breaking 4건과 마이그레이션**
+1. React 부품 내부 클래스가 `sd-*` 로 바뀜 → `registry/ui/*.tsx` 7파일(8종 — Input·Textarea 가 한 파일) + `cx.ts` 를 다시 복사하고 `dist/base.css` 를 함께 넣는다(둘 중 하나만 바꾸면 모양이 사라진다).
+2. Tailwind 소비처는 `@import "./design/base.css" layer(components);` 로 가져온다 — `brand-ring`·`brand-underline` 도 components 층에 들어가 className 유틸리티가 그 위에 온다.
+3. `base.css` 는 `registry/ui/` 가 아니라 `dist/` 에서 복사한다(버전 도장 확인 — `tokens.css`·`base.css`·tsx 첫 줄이 같은 판이어야 한다).
+4. 문서 계약 변경: Badge = 분류 꼬리표 전용(상태는 `sd-status`) · 폼 에러 = `error` 글자 + 숨은 접두 「오류:」 + `aria-describedby` · 입력 오류 = `aria-invalid` 로 테두리 `error`.
+- 새 검사 패턴(`border-brand` 등)에 걸리는 기존 코드는 잉크로 바꾸거나 `.design-check.allow` 에 사유와 함께 둔다.
+- 1.0 은 세 소비처가 v0.6.x 로 옮겨 간 뒤 한 달 동안 breaking 이 없으면 판단한다.
+
 ## v0.5.2 — 2026-08-18
 
 **patch** — BackLink 터치 타깃 양축 보장. 근거: v0.5.1 완료점검(Codex 4b)에서 §9 "24×24"와 구현 계약(`min-h-6`만) 사이의 갭 지적.
