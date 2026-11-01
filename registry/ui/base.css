@@ -244,8 +244,10 @@ input[type="radio"]:focus-visible {
 .sd-btn--icon.sd-btn--sm {
   width: 2rem;
 }
-/* 비활성은 네이티브 disabled 만. aria-disabled 를 쓰면 키보드 실행 차단은 소비처 스크립트 몫이다(DESIGN §6) */
-.sd-btn:disabled {
+/* 비활성 = 네이티브 disabled 또는 aria-disabled="true"(v0.7.4 — 요청 중 단추처럼 포커스가 남아야 할 때).
+   aria-disabled 의 키보드 실행 차단은 소비처 스크립트 몫이다(DESIGN §6 · §16-9) */
+.sd-btn:disabled,
+.sd-btn[aria-disabled="true"] {
   opacity: 0.4;
   pointer-events: none;
 }

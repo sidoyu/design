@@ -1,11 +1,11 @@
-// sidoyu-design v0.7.3 — 모양 정본 = base.css 의 sd-* 클래스 (이 줄은 빌드가 갱신)
+// sidoyu-design v0.7.4 — 모양 정본 = base.css 의 sd-* 클래스 (이 줄은 빌드가 갱신)
 import { cx } from "./cx";
 
 /**
  * 버튼(모양 = base.css .sd-btn). variant 2종(solid/ghost)·size 2단(md/sm) 외 추가 금지 —
  * 새 변형이 필요해 보이면 먼저 docs/DESIGN.md의 컴포넌트 절을 갱신한 뒤 추가한다.
  * icon = 아이콘 전용 정사각(40/32) — 보이는 글자가 없으므로 aria-label 필수(v0.6.0).
- * 비활성은 네이티브 disabled 만 흐리게 한다. aria-disabled 를 쓰면 키보드 실행 차단은 호출부 몫이다.
+ * 비활성 = 네이티브 disabled 또는 aria-disabled="true" 가 흐려진다(v0.7.4). aria-disabled 를 쓰면 키보드 실행 차단은 호출부 몫이다.
  */
 type ButtonStyleProps = {
   variant?: "solid" | "ghost";
