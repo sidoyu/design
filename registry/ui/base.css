@@ -467,6 +467,12 @@ select.sd-field {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
 }
+/* 주 목록 행 제목(v0.8.0) — 화면의 주 내용이 목록인 곳(대화 목록·검색 결과)에서 행마다 하나뿐인 제목 칸. 16/24.
+ * 표 칸(td)·목록 행 안 제목 요소에 붙인다. 보조 목록(사이드바 등)의 행 제목은 붙이지 않고 14 그대로 둔다(DESIGN §4) */
+.sd-row-title {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
 /* 정렬 단추 — 머리 th 안 <button>, 방향은 th 의 aria-sort 가 주인이고 화살표는 보조 */
 .sd-table thead th > button {
   all: unset;
@@ -563,6 +569,46 @@ pre.sd-code > code {
   border-left: 2px solid var(--color-ink);
   padding-left: 0.5rem;
   font-weight: 500;
+}
+
+/* ── 값 선택 펼침 목록(.sd-picker, v0.8.0) — 단추를 누르면 펼쳐지는 값 고르기 목록(예: 모델 선택).
+ * 네이티브 popover(top layer)에 붙인다 — z-index 없이 위에 뜨고, 바깥 누름·Esc 로 닫힌다. 위치·최소 폭은 배치라 소비처 몫.
+ * 항목 = .sd-list-item 단추 + aria-pressed(값 하나를 고르는 단추 묶음 — Segmented 와 같은 계약 · 방향키 없음).
+ * 선택 = 글자 앞 잉크 체크 + 굵게. 좌측선을 쓰지 않는다(작은 상자 안에서 스크롤 막대처럼 보였다 — 2026-11-02 실측).
+ * 체크는 테두리로 그린다(강제 색상 모드에서 시스템 색으로 남는다). 글자 「✓」를 넣지 않는다(항목 글자 = 값 이름) */
+.sd-picker {
+  box-sizing: border-box;
+  inset: auto;
+  margin: 0;
+  padding: 0.25rem;
+  border: 1px solid var(--color-ink);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  /* popover 기본값(auto)을 되돌린다 — 항목 포커스 링이 상자 가장자리에서 잘리지 않게. 공간이 모자랄 때만 소비처가 최대 높이와 함께 켠다 */
+  overflow: visible;
+}
+.sd-picker .sd-list-item {
+  position: relative;
+  min-height: 2.5rem;
+  padding-left: 2rem;
+  white-space: nowrap;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+.sd-picker .sd-list-item[aria-pressed="true"] {
+  font-weight: 500;
+}
+.sd-picker .sd-list-item[aria-pressed="true"]::before {
+  content: "";
+  position: absolute;
+  left: 0.8125rem;
+  top: 50%;
+  width: 0.3125rem;
+  height: 0.6875rem;
+  margin-top: -0.4375rem;
+  border-right: 2px solid var(--color-ink);
+  border-bottom: 2px solid var(--color-ink);
+  transform: rotate(45deg);
 }
 
 /* ── 탭·세그먼트 — 같은 모양. 선택 = 잉크 2px 밑줄 + 굵게(브랜드로 선택을 표시하지 않는다) */
@@ -721,10 +767,36 @@ pre.sd-code > code {
   background: var(--color-surface-subtle);
   padding: 0.625rem 0.875rem;
   font-size: 1rem;
-  line-height: 1.5rem;
+  /* 단위 없는 1.5(v0.8.0) — 16px 에서 24px 그대로. 고정 길이(1.5rem)는 안쪽의 큰 글자(제목)가 물려받아 줄이 겹쳤다 */
+  line-height: 1.5;
   text-align: start;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+/* 마크다운을 그린 발화(.sd-user-turn--md, v0.8.0) — 줄바꿈은 HTML 이 정한다(pre-wrap 이면 빈 줄이 덧붙는다).
+ * 발화는 짧은 글이라 제목도 본문 크기 16 + 굵기 600 으로 둔다(답의 .sd-prose 제목 크기를 쓰지 않는다).
+ * 안쪽 규칙은 :where() 로 우선순위 0 — 안에 놓인 sd-* 부품이 이긴다 */
+.sd-user-turn--md {
+  white-space: normal;
+}
+:where(.sd-user-turn--md) :where(p, ul, ol, pre, blockquote, .sd-table-wrap, h1, h2, h3, h4, h5, h6) {
+  margin: 0 0 0.5rem;
+}
+:where(.sd-user-turn--md) :where(ul, ol) {
+  padding-left: 1.5rem;
+}
+:where(.sd-user-turn--md) :where(h1, h2, h3, h4, h5, h6) {
+  font-size: 1rem;
+  line-height: inherit;
+  font-weight: 600;
+}
+:where(.sd-user-turn--md) :where(strong) {
+  font-weight: 600;
+}
+:where(.sd-user-turn--md) :where(hr) {
+  border: 0;
+  border-top: 1px solid var(--color-line);
+  margin: 0.75rem 0;
 }
 
 /* ── 긴 글(.sd-prose, v0.7.0) — 일반 CSS·생성 HTML 용 긴 글 규격(Tailwind typography 를 쓰는 소비처는 prose.css).
