@@ -1,4 +1,4 @@
-/* AUTO-GENERATED from registry/ui/base.css — 손으로 편집하지 말 것. (sidoyu-design v0.8.0) */
+/* AUTO-GENERATED from registry/ui/base.css — 손으로 편집하지 말 것. (sidoyu-design v0.8.1) */
 /* sidoyu design system — base.css (소스. 소비처는 빌드가 버전 도장을 찍은 dist/base.css 를 복사한다)
  * 모양의 유일한 정본. 순수 CSS — Tailwind 소비처는 dist/tokens.css 다음에, 일반 CSS 소비처는 dist/tokens.vars.css 다음에 import 한다.
  * 레이어로 감싸지 않는다 — 일반 CSS 소비처에서는 보통의 선택자 우선순위로 동작한다(소비처의 레이어 밖 초기화에 지지 않는다).
@@ -53,6 +53,23 @@ progress {
 ::selection {
   background: var(--color-brand-selection);
   color: var(--color-ink);
+}
+
+/* 검색으로 찾은 낱말 — 선택영역과 같은 「표시된 글자 범위」 틴트(v0.8.1).
+ * 지금 위치는 aria-current="true" 하나 = 잉크 면 + 흰 글자. 투명 outline 은 강제 색상 모드에서 지금 위치를 남긴다.
+ * 지금 위치 위를 끌어 선택하면 틴트가 잉크 면에 겹쳐 어두워지므로 선택 글자를 흰색으로 둔다(잉크 글자면 약 1.6:1). */
+mark {
+  background: var(--color-brand-selection);
+  color: inherit;
+}
+mark[aria-current="true"] {
+  background: var(--color-ink);
+  color: var(--color-surface);
+  outline: 2px solid transparent;
+}
+mark[aria-current="true"]::selection,
+mark[aria-current="true"] *::selection {
+  color: var(--color-surface);
 }
 
 /* ── 포커스 링 — 모든 인터랙티브 요소에 적용 의무.

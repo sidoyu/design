@@ -54,6 +54,23 @@ progress {
   color: var(--color-ink);
 }
 
+/* 검색으로 찾은 낱말 — 선택영역과 같은 「표시된 글자 범위」 틴트(v0.8.1).
+ * 지금 위치는 aria-current="true" 하나 = 잉크 면 + 흰 글자. 투명 outline 은 강제 색상 모드에서 지금 위치를 남긴다.
+ * 지금 위치 위를 끌어 선택하면 틴트가 잉크 면에 겹쳐 어두워지므로 선택 글자를 흰색으로 둔다(잉크 글자면 약 1.6:1). */
+mark {
+  background: var(--color-brand-selection);
+  color: inherit;
+}
+mark[aria-current="true"] {
+  background: var(--color-ink);
+  color: var(--color-surface);
+  outline: 2px solid transparent;
+}
+mark[aria-current="true"]::selection,
+mark[aria-current="true"] *::selection {
+  color: var(--color-surface);
+}
+
 /* ── 포커스 링 — 모든 인터랙티브 요소에 적용 의무.
  * 주 표시 = 고대비 ink 링(WCAG 2.2 Focus Appearance 3:1 충족), 바깥 halo = brand-hover(보조).
  * 브랜드 단독 포커스 링 금지(흰 배경 대비 1.36:1로 미달).
