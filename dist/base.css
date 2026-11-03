@@ -1,4 +1,4 @@
-/* AUTO-GENERATED from registry/ui/base.css — 손으로 편집하지 말 것. (sidoyu-design v0.9.0) */
+/* AUTO-GENERATED from registry/ui/base.css — 손으로 편집하지 말 것. (sidoyu-design v0.10.0) */
 /* sidoyu design system — base.css (소스. 소비처는 빌드가 버전 도장을 찍은 dist/base.css 를 복사한다)
  * 모양의 유일한 정본. 순수 CSS — Tailwind 소비처는 dist/tokens.css 다음에, 일반 CSS 소비처는 dist/tokens.vars.css 다음에 import 한다.
  * 레이어로 감싸지 않는다 — 일반 CSS 소비처에서는 보통의 선택자 우선순위로 동작한다(소비처의 레이어 밖 초기화에 지지 않는다).
@@ -504,6 +504,16 @@ select.sd-field {
 .sd-row--idle {
   color: var(--color-ink-muted);
 }
+/* 표 보조 행(v0.10.0) — 행 조작 뒤 잠시 붙는 제자리 확인·결과 문구를 그 행 바로 아래에 둔다. 칸 하나(colspan = 전체 칸 수)가 모든 칸을 잇는다.
+ * 앞 행과 한 덩어리: 앞 행의 아래 선을 지우고 보조 행 아래에 행 선을 둔다 · 위 여백 0 · 아래 여백 4px.
+ * 행마다 늘 붙는 내용(검색 발췌 등)은 여기 쓰지 않고 제목 칸 안에 둔다(v0.9.0) */
+.sd-table > tbody > tr.sd-row-note > td {
+  padding: 0 0 0.25rem;
+}
+.sd-table > tbody > tr:has(+ tr.sd-row-note) > td,
+.sd-table > tbody > tr:has(+ tr.sd-row-note) > th {
+  border-bottom-color: transparent;
+}
 /* 쌓기 변형(v0.9.0) — 주 목록 표(행 제목 칸 .sd-row-title 을 가진 표)에 붙이면 좁은 화면(48rem 미만 · DESIGN §5-1 경계)에서 행을 쌓는다.
  * 여기서 갖는 것 = 칸 여백·테두리 초기화 · 행 위아래 여백 · 행 아래 line 1px · 머리 숨김.
  * 머리는 화면에서만 숨기지 않고 통째로 숨긴다 — 안의 정렬 단추가 보이지 않는 채로 키보드 포커스를 받지 않게(정렬은 넓은 화면에서).
@@ -527,6 +537,16 @@ select.sd-field {
     display: block;
     padding: 0;
     border-bottom: 0;
+  }
+  /* 쌓인 보조 행(v0.10.0) = 위 여백 0 · 칸 여백 0 · 앞 행의 아래 선을 지운다(선은 보조 행 아래 하나) */
+  .sd-table--stack > tbody > tr.sd-row-note {
+    padding-top: 0;
+  }
+  .sd-table--stack > tbody > tr.sd-row-note > td {
+    padding: 0;
+  }
+  .sd-table--stack > tbody > tr:has(+ tr.sd-row-note) {
+    border-bottom-color: transparent;
   }
 }
 
