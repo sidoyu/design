@@ -72,7 +72,7 @@ PATTERNS=(
   $'border-radius[[:space:]]*:[^;}]*\tradius 전면 금지 — 직각 모서리(0 만 허용)\t:[[:space:]]*0(px|rem|em|%)?[[:space:]]*(!important)?[[:space:]]*$'
   "${B}(shadow|backdrop)-"$'\t그림자·블러 금지 — 플랫(포커스 링 box-shadow 는 base.css 정본만)'
   $'box-shadow[[:space:]]*:[^;}]*\t그림자 금지 — 플랫(포커스 링은 base.css 정본만)\t(registry/ui/base\\.css:[0-9]+:|:[[:space:]]*none[[:space:]]*(!important)?[[:space:]]*$)'
-  $'(linear|radial|conic)-gradient\\(\t그라데이션 금지(§1-3-1 — 셀렉트 화살표 도형은 base.css 정본만)\tregistry/ui/base\\.css:[0-9]+:'
+  $'(linear|radial|conic)-gradient\\(\t그라데이션 금지(§1-3-1 — 셀렉트 화살표 도형·떠 있는 단추 호버 면은 base.css 정본만)\tregistry/ui/base\\.css:[0-9]+:'
   "${B}border ([^'\"\`]* )?([a-z0-9-]+:)*border-line${E}|${B}border-line ([^'\"\`]* )?([a-z0-9-]+:)*border${E}"$'\t사면 박스 금지 — 구획은 수평선(border-t/b)·여백(기능 테두리는 allow에 사유와 함께)'
   $'max-w-(xs|sm|md|lg|xl|[2-7]xl)([^a-z-]|$)\t컨테이너 폭은 max-w-wide/reading/narrow만 허용(PageShell 사용)'
   "${B}text-(xl|[4-9]xl)${E}"$'\t타입 스케일 6단(xs·sm·base·lg·2xl·3xl) 밖 크기 금지'

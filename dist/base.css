@@ -269,6 +269,17 @@ input[type="radio"]:focus-visible {
 .sd-btn--icon.sd-btn--sm {
   width: 2rem;
 }
+/* 떠 있는 단추(v0.12.0) — 글 위에 겹쳐 고정되는 아이콘 단추. --icon 과 함께만 쓰고 --sm 과 섞지 않는다.
+ * 불투명 흰 면 + 잉크 1px(그림자 대신 · 강제 색상 모드에서도 경계가 남는다) · 44 정사각(이 변형에만 있는 크기).
+ * 자리 = 머리 줄 없는 화면의 위 단추 · 맨 아래로 단추 · 그림 보기 닫기(DESIGN §6 Button). 흐림·반투명·그림자 없음.
+ * --icon 뒤에 두어 같은 우선순위에서 크기가 이긴다. 호버 면은 아래 호버 절(불투명) */
+.sd-btn--float {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-color: var(--color-ink);
+  background: var(--color-surface);
+  color: var(--color-ink);
+}
 /* 비활성 = 네이티브 disabled 또는 aria-disabled="true"(v0.7.4 — 요청 중 단추처럼 포커스가 남아야 할 때).
    aria-disabled 의 키보드 실행 차단은 소비처 스크립트 몫이다(DESIGN §6 · §16-9) */
 .sd-btn:disabled,
@@ -392,6 +403,28 @@ select.sd-field {
 .sd-composer .sd-actions {
   flex-wrap: nowrap;
   padding: 0 0.5rem 0.5rem;
+}
+/* 한 줄 복합 입력(.sd-composer--row, v0.12.0) — 마크업 순서 = 화면 순서 = [첨부 목록(있을 때)] → [첨부 단추] · 입력칸 · [보내기].
+ * 묶음은 줄바꿈(wrap)이고, 첨부 목록은 소비처가 전체 폭(flex-basis: 100% — 배치)으로 두어 맨 위 줄을 차지한다.
+ * 아래 세 요소는 한 줄: 단추(md 40)는 줄지 않고 아래에 붙고, 입력칸만 남는 폭을 받아 위로 자란다(최대 높이는 소비처 배치).
+ * 첨부 없는 한 줄(rows="1")의 쉬는 높이 = 테두리 2 + 여백 4 + 한 줄 40(입력칸 글 24 + 위아래 8) + 여백 4 + 테두리 2 = 52 (DESIGN §6 복합 입력) */
+.sd-composer--row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.25rem;
+  padding: 0.25rem;
+}
+.sd-composer--row > .sd-btn {
+  flex: none;
+}
+.sd-composer--row textarea {
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
+  padding: 0.5rem 0.25rem;
+  /* 글꼴은 상속(font: inherit)이라 줄간격을 여기서 고정한다 — 소비처 body 줄간격에 따라 쉬는 높이가 바뀌지 않게 */
+  line-height: 1.5;
 }
 
 /* ── 상태 표기 — 뜻 이름 글자가 주인, 색·표지는 보조.
@@ -643,6 +676,17 @@ pre.sd-code > code {
   padding-left: 0.5rem;
   font-weight: 500;
 }
+/* 주 목록 변형(.sd-list--divided, v0.12.0) — .sd-list 에 붙인다. 좁은 화면(48rem 미만)에서 목록이 화면의 주 내용(뿌리 화면)일 때만 걸린다:
+ * 행 위아래 10px · 행 아래 line 1px(쌓인 주 목록 표와 같은 값) · 행 글자 16/24(DESIGN §4 주 목록 행 제목). 메타(.sd-meta)는 자기 크기 12 그대로.
+ * 넓은 화면의 목록 열은 보조 목록이라 기본 목록 행(14 · 선 없음) 그대로 — 폭에 따라 소비처가 클래스를 붙였다 떼지 않는다 */
+@media (width < 48rem) {
+  .sd-list--divided .sd-list-item {
+    padding-block: 0.625rem;
+    border-bottom: 1px solid var(--color-line);
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+}
 
 /* ── 값 선택 펼침 목록(.sd-picker, v0.8.0) — 단추를 누르면 펼쳐지는 값 고르기 목록(예: 모델 선택).
  * 네이티브 popover(top layer)에 붙인다 — z-index 없이 위에 뜨고, 바깥 누름·Esc 로 닫힌다. 위치·최소 폭은 배치라 소비처 몫.
@@ -747,6 +791,11 @@ pre.sd-code > code {
   .sd-btn--plain:hover {
     background: var(--color-brand-hover);
   }
+  /* 떠 있는 단추(v0.12.0)는 글 위에 있으므로 투명 틴트만 깔면 뒤 글이 비친다 → 흰 면 위에 같은 틴트를 한 겹 겹친 불투명 면.
+   * linear-gradient 는 단색 한 겹을 겹치는 도형 기법이다(DESIGN §1-3-1 예외 — base.css 정본 안에만) */
+  .sd-btn--float:hover {
+    background: linear-gradient(var(--color-brand-hover), var(--color-brand-hover)) var(--color-surface);
+  }
 }
 /* plain 은 평소 면이 없어 누름·키보드 포커스 때도 면을 보인다(v0.11.0 — 터치 기기는 호버가 없다).
  * .sd-btn:hover(잉크 80%)보다 뒤에 두어 같은 우선순위에서 이긴다 */
@@ -766,6 +815,17 @@ pre.sd-code > code {
 }
 .sd-layer::backdrop {
   background: color-mix(in srgb, var(--color-ink) 20%, transparent);
+}
+/* 그림 보기(.sd-layer--media, v0.12.0) — 그림 하나를 같은 화면에서 크게 보는 층. 바탕·테두리·안쪽 여백 없이
+ * 어두운 배경막(잉크 90% — 계산값은 여기 한 곳) 위에 그림만 둔다. 닫기 = 떠 있는 단추(.sd-btn--float).
+ * 층 크기·그림 맞춤(화면에 맞춰 줄이고 키우지 않음)·기록 한 칸은 소비처 몫(DESIGN §6 떠 있는 층) */
+.sd-layer--media {
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+.sd-layer--media::backdrop {
+  background: color-mix(in srgb, var(--color-ink) 90%, transparent);
 }
 
 /* ── 슬라이더(.sd-range, v0.7.0 — sidoyu.com .range-ink 를 옮김) — 트랙 = line 2px, 손잡이 = 잉크 사각.
@@ -853,6 +913,8 @@ pre.sd-code > code {
   line-height: 1.5;
   text-align: start;
   white-space: pre-wrap;
+  /* 한국어는 낱말 단위로 줄을 바꾸고 한 줄에 안 들어가는 긴 낱말·주소만 아무 곳에서나 끊는다(v0.12.0 — 대화 글과 같은 규칙, DESIGN §4) */
+  word-break: keep-all;
   overflow-wrap: anywhere;
 }
 /* 마크다운을 그린 발화(.sd-user-turn--md, v0.8.0) — 줄바꿈은 HTML 이 정한다(pre-wrap 이면 빈 줄이 덧붙는다).
@@ -929,6 +991,17 @@ pre.sd-code > code {
   border: 0;
   border-top: 1px solid var(--color-line);
   margin: 1.5rem 0;
+}
+/* 대화 글(.sd-prose--chat, v0.12.0) — .sd-prose 와 함께 붙인다. 대화의 답은 짧은 글이 이어지므로 줄간격 1.5(16px 에서 24) · 문단·목록·표 아래 8px.
+ * 한국어는 낱말 단위로 줄을 바꾸고(keep-all) 한 줄에 들어가지 않는 긴 낱말·주소만 아무 곳에서나 끊는다(anywhere — 좁은 칸·표 넘침 방지).
+ * 긴 글 줄간격 1.75 는 문서를 읽는 화면에만 둔다(DESIGN §4). 안쪽 규칙은 위 .sd-prose 규칙과 같은 우선순위 0 이고 뒤에 있어 이긴다 */
+.sd-prose--chat {
+  line-height: 1.5;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+:where(.sd-prose--chat) :where(p, ul, ol, blockquote, pre, .sd-table-wrap) {
+  margin: 0 0 0.5rem;
 }
 /* 첫·마지막 자식 여백 보정은 위 여백 규칙보다 뒤·위 우선순위로 둔다(마지막이 표 상자여도 아래 여백이 남지 않게) */
 .sd-prose > :first-child {
