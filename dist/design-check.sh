@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# AUTO-GENERATED from scripts/design-check.sh — 손으로 편집하지 말 것. (sidoyu-design v0.12.2)
+# AUTO-GENERATED from scripts/design-check.sh — 손으로 편집하지 말 것. (sidoyu-design v0.12.3)
 # sidoyu design system — 금지 패턴 검사 (보조 안전망 — 권위는 docs/DESIGN.md · 무엇을 잡는지는 DESIGN §12 "검사" 열).
 # 사용: bash design-check.sh [경로...]   (경로를 주지 않으면 . )
 #   - 경로가 app·components·lib·src·registry 중 하나를 가진 폴더면 그 하위 폴더들을 검사한다(Tailwind 소비처 기본).
