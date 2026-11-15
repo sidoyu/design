@@ -616,8 +616,12 @@ select.sd-field {
     position: absolute;
     inset: 0;
   }
-  .sd-table--stack > tbody > tr:has(.sd-row-link) :is(a, button, input, select, textarea, summary, [tabindex]):not(.sd-row-link) {
+  /* 위치 지정은 :where 로 우선순위 0 — 소비처가 위치를 정한 요소(절대 등)는 소비처 값이 이기고, 그때도 z-index 가 걸린다.
+   * label 포함 — 체크박스 줄(.sd-check)의 글자·빈 곳을 눌러도 체크가 바뀌어야 한다(리뷰 11-16) */
+  :where(.sd-table--stack > tbody > tr:has(.sd-row-link) :is(a, button, input, select, textarea, summary, label, [tabindex]):not(.sd-row-link)) {
     position: relative;
+  }
+  .sd-table--stack > tbody > tr:has(.sd-row-link) :is(a, button, input, select, textarea, summary, label, [tabindex]):not(.sd-row-link) {
     z-index: 1;
   }
   .sd-table--stack > tbody > tr:has(.sd-row-link) .sd-btn:is(:disabled, [aria-disabled="true"]) {
@@ -874,10 +878,11 @@ pre.sd-code > code {
   :is(.sd-callout--strong, .sd-callout--attention) .sd-actions .sd-btn::after {
     content: "";
     position: absolute;
-    top: min(0px, calc(50% - var(--sd-hit) / 2));
-    bottom: min(0px, calc(50% - var(--sd-hit) / 2));
-    left: min(0px, calc(50% - var(--sd-hit) / 2));
-    right: min(0px, calc(50% - var(--sd-hit) / 2));
+    inset: min(0px, calc(50% - var(--sd-hit) / 2)); /* 퍼센트는 축마다 그 축의 크기로 풀린다 */
+  }
+  /* .sd-tab 은 all: unset 이 위치 지정을 static 으로 되돌려 위 :where 를 이긴다 — 함께 붙이면 범위의 기준이 먼 조상이 된다(리뷰 11-16) */
+  .sd-tab.sd-target {
+    position: relative;
   }
   .sd-actions:has(> .sd-btn--sm) {
     gap: 0.75rem;
