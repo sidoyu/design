@@ -602,12 +602,15 @@ select.sd-field {
     border-bottom-color: transparent;
   }
 }
-/* 행 전체 누름(v0.14.0) — 좁은 화면(쌓인 행) + 손가락 기기에서, 행의 주 링크 하나(.sd-row-link)가 보이지 않는 면으로 행 전체를 덮는다.
+/* 행 전체 누름(v0.14.0 · 구현 v0.14.1) — 좁은 화면(쌓인 행) + 손가락 기기에서, 행의 주 링크 하나(.sd-row-link)가 보이지 않는 면으로 행 전체를 덮는다.
  * 마우스 화면은 넓든 좁든 그대로다(칸 글자를 고를 수 있게). 면의 기준 = 행(tr) — 칸(td)에 위치를 주면 면이 그 칸으로 줄어든다.
- * 행 안의 다른 조작 요소는 면 위로 올려 따로 눌린다. 비활성 단추(pointer-events: none)는 행 안에서만 누름을 받는다 — 받지 않으면 그 아래 면이
- * 눌려 요청 중 단추를 다시 누를 때 그 항목이 열린다. 비활성 단추의 누름이 실행되지 않게 막는 것은 키보드와 같이 소비처 스크립트 몫이다(§16-9) */
+ * 행 안의 다른 조작 요소는 면 위에 그려져 따로 눌린다. 비활성 단추(pointer-events: none)는 행 안에서만 누름을 받는다 — 받지 않으면 그 아래 면이
+ * 눌려 요청 중 단추를 다시 누를 때 그 항목이 열린다. 비활성 단추의 누름이 실행되지 않게 막는 것은 키보드와 같이 소비처 스크립트 몫이다(§16-9).
+ * 구현(v0.14.1) — 수천 행 목록의 스크롤·행 교체가 느려지지 않게 :has() 와 z-index 를 쓰지 않는다(v0.14.0 의 tr:has() 는 행 하나 교체를 약 12배(8 → 94ms)로,
+ * 안쪽 요소마다 준 z-index: 1 은 스크롤 프레임을 늘렸다 · WebKit 3,700행 실측). 그래서 ① 행 기준은 이 기기의 쌓인 행 전부에 건다
+ * ② 안쪽 조작 요소는 위치만 지정해 그리는 순서(문서 순서)로 면 위에 놓인다 — 조작 요소는 문서 순서상 주 링크보다 뒤에 둔다(앞에 두면 면 아래에 깔린다) */
 @media (width < 48rem) and (pointer: coarse) {
-  .sd-table--stack > tbody > tr:has(.sd-row-link) {
+  .sd-table--stack > tbody > tr {
     position: relative;
   }
   .sd-table--stack .sd-row-link::after {
@@ -615,15 +618,12 @@ select.sd-field {
     position: absolute;
     inset: 0;
   }
-  /* 위치 지정은 :where 로 우선순위 0 — 소비처가 위치를 정한 요소(절대 등)는 소비처 값이 이기고, 그때도 z-index 가 걸린다.
+  /* 위치 지정은 :where 로 우선순위 0 — 소비처가 위치를 정한 요소(절대 등)는 소비처 값이 이기고, 그때도 문서 순서대로 면 위에 그려진다.
    * label 포함 — 체크박스 줄(.sd-check)의 글자·빈 곳을 눌러도 체크가 바뀌어야 한다(리뷰 11-16) */
-  :where(.sd-table--stack > tbody > tr:has(.sd-row-link) :is(a, button, input, select, textarea, summary, label, [tabindex]):not(.sd-row-link)) {
+  :where(.sd-table--stack > tbody > tr :is(a, button, input, select, textarea, summary, label, [tabindex]):not(.sd-row-link)) {
     position: relative;
   }
-  .sd-table--stack > tbody > tr:has(.sd-row-link) :is(a, button, input, select, textarea, summary, label, [tabindex]):not(.sd-row-link) {
-    z-index: 1;
-  }
-  .sd-table--stack > tbody > tr:has(.sd-row-link) .sd-btn:is(:disabled, [aria-disabled="true"]) {
+  .sd-table--stack > tbody > tr .sd-btn:is(:disabled, [aria-disabled="true"]) {
     pointer-events: auto;
     cursor: default;
   }
