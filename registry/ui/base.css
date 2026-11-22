@@ -41,6 +41,13 @@ input[type="search"] {
   -webkit-appearance: none;
   appearance: none;
 }
+/* 검색칸 안에 브라우저가 붙이는 글자 지우기 단추(Chrome 파란 ×·Safari 회색 ⓧ)를 쓰지 않는다(v0.15.1) — 잉크·직각 모양 밖의
+   브라우저 부품이고, 찾기 줄의 [닫기] ✕ 와 뜻이 다른 × 가 한 줄에 겹친다. 지우는 기능은 그 화면이 닫기 단추·Esc 로 준다(DESIGN §6) */
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
 
 /* 네이티브 체크박스·라디오·슬라이더·진행 막대 = 잉크(v0.6.0) */
 input[type="checkbox"],

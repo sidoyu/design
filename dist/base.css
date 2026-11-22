@@ -1,4 +1,4 @@
-/* AUTO-GENERATED from registry/ui/base.css — 손으로 편집하지 말 것. (sidoyu-design v0.15.0) */
+/* AUTO-GENERATED from registry/ui/base.css — 손으로 편집하지 말 것. (sidoyu-design v0.15.1) */
 /* sidoyu design system — base.css (소스. 소비처는 빌드가 버전 도장을 찍은 dist/base.css 를 복사한다)
  * 모양의 유일한 정본. 순수 CSS — Tailwind 소비처는 dist/tokens.css 다음에, 일반 CSS 소비처는 dist/tokens.vars.css 다음에 import 한다.
  * 레이어로 감싸지 않는다 — 일반 CSS 소비처에서는 보통의 선택자 우선순위로 동작한다(소비처의 레이어 밖 초기화에 지지 않는다).
@@ -41,6 +41,13 @@ textarea {
 input[type="search"] {
   -webkit-appearance: none;
   appearance: none;
+}
+/* 검색칸 안에 브라우저가 붙이는 글자 지우기 단추(Chrome 파란 ×·Safari 회색 ⓧ)를 쓰지 않는다(v0.15.1) — 잉크·직각 모양 밖의
+   브라우저 부품이고, 찾기 줄의 [닫기] ✕ 와 뜻이 다른 × 가 한 줄에 겹친다. 지우는 기능은 그 화면이 닫기 단추·Esc 로 준다(DESIGN §6) */
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
 }
 
 /* 네이티브 체크박스·라디오·슬라이더·진행 막대 = 잉크(v0.6.0) */
