@@ -116,10 +116,16 @@ input[type="range"] {
   }
 }
 
-/* 진행 막대 = 직각 막대(v0.16.0 — 옛 값 = 브라우저 기본 모양 + accent-color). 브라우저 기본 막대는 끝이 둥글고 기기마다
-   모양이 달라 직각 원칙(DESIGN §1-3-1) 밖이다. 잉크 1px 테두리 + 잉크 채움, 폭은 놓인 칸을 채운다(폭은 소비처가 칸으로 정한다).
-   값 없는 progress(끝을 모르는 진행)는 채움 없이 빈 틀만 보이므로 쓰지 않는다 — 진행 중은 문구로 알린다(DESIGN §16-6).
-   테두리와 채움은 글자색(currentColor)을 따른다 — 변형은 color 하나만 바꾼다.
+/* 진행 막대 = 밑줄 막대(v0.20.0 — v0.16.0 의 10px 네모 막대와 v0.18.0 의 24px 이름 게이지를 이 모양 하나로 바꾼다).
+   아래 1px 밑줄이 전체 길이(최댓값)를, 그 바로 위 3px 채움이 값을 보인다. 높이 4px · 폭은 놓인 칸을 채운다(폭은 소비처가 칸으로 정한다).
+   브라우저 기본 막대는 끝이 둥글고 기기마다 모양이 달라 직각 원칙(DESIGN §1-3-1) 밖이다 → 기본 모양을 끄고 다시 그린다.
+   색 = 둘레 글자색을 그대로 받는다(currentColor) — 막대는 곁에 적힌 수치와 같은 색이다(DESIGN §3 「수치를 그린 표시」).
+   메타 수치(.sd-meta) 곁이면 ink-faint, 본문 수치 곁이면 잉크가 된다. 변형은 color 하나만 바꾼다.
+   밑줄(progress 의 아래 테두리)과 채움(값 가상 요소의 위 테두리)은 포개지 않고 맞붙인다 — 반투명 색은 두 겹이 겹친 줄만 진해진다(DESIGN §3).
+   채움도 면이 아니라 테두리로 그린다 — 강제 색상 모드는 면의 색을 지우고 배경 인쇄를 끈 종이는 면을 빼지만, 테두리는 둘 다에서 남는다
+   (펼침 목록의 체크와 같은 방식). 그래서 브라우저 기본 막대로 되돌리는 블록을 두지 않는다.
+   높이는 px 로 둔다 — 테두리 두 줄(1 + 3)의 합과 같아야 채움과 밑줄 사이가 벌어지지 않는다.
+   값 없는 progress(끝을 모르는 진행)는 채움 없이 밑줄만 보이므로 쓰지 않는다 — 진행 중은 문구로 알린다(DESIGN §16-6).
    엔진별 가상 요소는 한 규칙에 묶지 않는다(모르는 선택자가 하나라도 있으면 규칙 전체가 버려진다). */
 progress {
   -webkit-appearance: none;
@@ -127,45 +133,44 @@ progress {
   display: block;
   box-sizing: border-box;
   width: 100%;
-  height: 0.625rem;
-  border: 1px solid currentColor;
+  height: 4px;
+  border: 0;
+  border-bottom: 1px solid currentColor;
   border-radius: 0;
-  background: var(--color-surface);
-  color: var(--color-ink);
+  background: transparent;
+  color: inherit;
 }
 progress::-webkit-progress-bar {
-  background: var(--color-surface);
+  background: transparent;
   border-radius: 0;
 }
 progress::-webkit-progress-value {
-  background: currentColor;
+  box-sizing: border-box;
+  background: transparent;
+  border-top: 3px solid currentColor;
   border-radius: 0;
 }
 progress::-moz-progress-bar {
-  background: currentColor;
+  box-sizing: border-box;
+  background: transparent;
+  border-top: 3px solid currentColor;
   border-radius: 0;
 }
-/* 높은 값이 경고인 게이지(예: 한도 사용량)가 소비처 기준(예: 90%)을 넘으면 테두리와 채움을 오류 색으로 그린다 — DESIGN §3 error 의
-   면 금지 예외는 이것 하나다. 일을 마쳐 가는 진행(100% = 완료)에는 쓰지 않는다. 색만 바꾸지 않는다 — 같은 줄에 수치를 함께 보인다(§1-4). */
+/* 높은 값이 경고인 게이지(예: 한도 사용량)가 소비처 기준(예: 90%)을 넘으면 밑줄과 채움을 오류 색으로 그린다 — 4px 선이므로
+   상태색을 「선」에 쓰는 것이다(DESIGN §3 · v0.16.0 의 면 금지 예외는 v0.20.0 에서 없어졌다). 일을 마쳐 가는 진행(100% = 완료)과
+   순위·분포 같은 비교 값에는 쓰지 않는다. 색만 바꾸지 않는다 — 같은 줄에 수치를 함께 보인다(§1-4). */
 progress.sd-progress--error {
   color: var(--color-error);
 }
-/* 강제 색상 모드는 채움 면의 색을 지운다 → 브라우저 기본 막대로 되돌린다(셀렉트 화살표와 같은 처리) */
-@media (forced-colors: active) {
-  progress {
-    -webkit-appearance: auto;
-    appearance: auto;
-  }
-}
 
-/* 이름을 담는 진행 막대(.sd-gauge, v0.18.0) — 막대 안 왼쪽에 이름, 오른쪽에 수치를 넣고, 채움 위에 놓인 글자만 흰색으로 바꾼다.
-   막대는 그대로 <progress> 다(div 로 그리지 않는다). 마크업 순서 = progress → 글자 줄(.sd-gauge-label: 이름 span · 공백 한 칸 · 수치 span) →
-   채움 위 글자 줄(.sd-gauge-fill-label, 빈 span · data-name·data-value). 두 글자 줄은 aria-hidden 이고, 화면낭독기 이름은 progress 의 aria-label 이 맡는다.
-   채움 비율은 소비처가 style="--sd-gauge-fill: 0.63" 처럼 값 ÷ 최댓값(0~1)으로 준다(예: value 63 · max 100 → 0.63 · 63 을 그대로 넣지 않는다).
-   흰 글자는 CSS 가 data- 속성에서 만들어 낸다(::before·::after). 그래서 이 규칙이 듣지 않는 곳에는 글자가 처음부터 한 벌만 있다 —
-   인쇄·강제 색상 모드에서는 글자 줄이 막대 위에 따로 놓이고(막대는 v0.16.0 모양 10px), 옛 base.css(v0.17.0 이하)에서는 마크업 순서대로 막대 다음에 글자 한 벌이다.
-   높이 24 · 글자 12/16 · 굵기 400(임계 이상 수치만 500) · 좌우 여백 6. 폭은 소비처 몫(이름과 수치가 함께 들어가는 폭으로 정한다 — 그래도 넘치는 이름은 끝을 말줄임표로 줄이고 수치는 그대로 둔다).
-   임계 이상 수치 규칙은 형제 선택자(~)로 고른다 — 마크업 순서가 정해져 있어 :has() 가 필요 없다. */
+/* 이름을 담는 게이지(.sd-gauge, v0.18.0 · v0.20.0 밑줄형) — 위에 글자 줄(이름 · 수치), 아래에 밑줄 막대. 나란한 게이지를 좁은 줄에서 견줄 때 쓴다.
+   마크업 순서 = progress → 글자 줄(.sd-gauge-label: 이름 span · 공백 한 칸 · 수치 span, aria-hidden). 글자 줄은 order 로 위에 그린다 —
+   마크업 순서를 이렇게 두는 것은 임계 이상 수치를 형제 선택자(~)로 고르기 위해서다(:has() 없음).
+   화면낭독기 이름은 progress 의 aria-label 하나가 맡는다(대상·값·임박 여부·부가 일정까지 글로).
+   글자 12/16 · 굵기 400(임계 이상 수치만 500) · 글자 줄과 막대 사이 2px.
+   색은 정하지 않는다 — 글자 줄과 막대가 둘레 글자색을 함께 받는다. 곁에 두고 보는 보조 값이면 .sd-gauge 에 .sd-meta 를 함께 붙여
+   글자와 막대를 ink-faint 로 둔다(DESIGN §6).
+   폭은 소비처 몫(나란한 게이지는 같은 폭 · 가장 긴 이름과 「100%」가 함께 들어가는 폭). 그래도 넘치는 이름은 끝을 말줄임표로 줄이고 수치는 그대로 둔다. */
 .sd-gauge {
   display: flex;
   flex-direction: column;
@@ -182,9 +187,8 @@ progress.sd-progress--error {
   align-items: center;
   gap: 0.25rem;
   white-space: nowrap;
-  color: var(--color-ink);
 }
-/* 이름이 폭을 넘치면 끝을 말줄임표로 줄인다 — 수치는 줄이지 않는다(막대 밖으로 밀려 이웃과 겹치지 않게). 전체 이름은 aria-label 이 갖는다 */
+/* 이름이 폭을 넘치면 끝을 말줄임표로 줄인다 — 수치는 줄이지 않는다(이웃 게이지와 겹치지 않게). 전체 이름은 aria-label 이 갖는다 */
 .sd-gauge-label > :first-child {
   min-width: 0;
   overflow: hidden;
@@ -194,63 +198,10 @@ progress.sd-progress--error {
   flex: none;
   font-variant-numeric: tabular-nums;
 }
-.sd-gauge-fill-label {
-  display: none;
-}
-/* 정상 게이지의 테두리와 채움 = ink-faint(v0.19.0 — 옛 값 = 잉크). 게이지는 곁에 두고 보는 보조 값이라 목록의 메타 값(.sd-meta)과 같은 농도로 둔다.
-   글자 줄(이름·수치)은 그대로 잉크이고, 채움 위 흰 글자는 4.76:1(DESIGN §3 글자 하한)이다. 임계 이상(sd-progress--error)은 :not 으로 빼서
-   규칙 순서와 상관없이 오류 색이 남는다. 맨 progress(10px 막대)는 잉크 그대로다. */
-.sd-gauge > progress:not(.sd-progress--error) {
-  color: var(--color-ink-faint);
-}
-/* 임계 이상 = 막대에 sd-progress--error(v0.16.0) 를 붙이면 채움 밖 수치가 오류 색 + 굵기 500 이 된다 */
+/* 임계 이상 = 막대에 sd-progress--error 를 붙이면 수치가 오류 색 + 굵기 500 이 된다(이름은 그대로) */
 .sd-gauge > progress.sd-progress--error ~ .sd-gauge-label > :last-child {
   color: var(--color-error);
   font-weight: 500;
-}
-/* 일반 화면에서만 글자를 막대 안에 포갠다. 위치 지정 요소는 문서 순서대로 그려지므로 z-index 없이 progress → 글자 줄 → 흰 글자 줄 순으로 쌓인다.
-   흰 글자 줄은 채움 길이만큼만 보인다: 채움 = 테두리 1px 안쪽 폭 × 비율이므로 오른쪽을 (폭 - 2px) × (1 - 비율) + 1px 만큼 자른다 */
-@media screen and (forced-colors: none) {
-  .sd-gauge {
-    position: relative;
-    display: block;
-    height: 1.5rem;
-  }
-  .sd-gauge > progress {
-    position: absolute;
-    inset: 0;
-    height: 100%;
-  }
-  .sd-gauge-label,
-  .sd-gauge-fill-label {
-    position: absolute;
-    inset: 0;
-    padding-inline: 0.375rem;
-  }
-  .sd-gauge-fill-label {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.25rem;
-    white-space: nowrap;
-    color: var(--color-surface);
-    clip-path: inset(0 calc((100% - 2px) * (1 - clamp(0, var(--sd-gauge-fill, 0), 1)) + 1px) 0 0);
-  }
-  /* 흰 글자 줄도 아래 글자 줄과 같은 자리에서 같은 길이로 줄인다(두 줄의 칸 규칙이 같아야 글자가 겹쳐 맞는다) */
-  .sd-gauge-fill-label::before {
-    content: attr(data-name);
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .sd-gauge-fill-label::after {
-    content: attr(data-value);
-    flex: none;
-    font-variant-numeric: tabular-nums;
-  }
-  .sd-gauge > progress.sd-progress--error ~ .sd-gauge-fill-label::after {
-    font-weight: 500;
-  }
 }
 
 /* 텍스트 선택영역 — 브랜드 틴트 */
