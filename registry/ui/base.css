@@ -197,6 +197,12 @@ progress.sd-progress--error {
 .sd-gauge-fill-label {
   display: none;
 }
+/* 정상 게이지의 테두리와 채움 = ink-faint(v0.19.0 — 옛 값 = 잉크). 게이지는 곁에 두고 보는 보조 값이라 목록의 메타 값(.sd-meta)과 같은 농도로 둔다.
+   글자 줄(이름·수치)은 그대로 잉크이고, 채움 위 흰 글자는 4.76:1(DESIGN §3 글자 하한)이다. 임계 이상(sd-progress--error)은 :not 으로 빼서
+   규칙 순서와 상관없이 오류 색이 남는다. 맨 progress(10px 막대)는 잉크 그대로다. */
+.sd-gauge > progress:not(.sd-progress--error) {
+  color: var(--color-ink-faint);
+}
 /* 임계 이상 = 막대에 sd-progress--error(v0.16.0) 를 붙이면 채움 밖 수치가 오류 색 + 굵기 500 이 된다 */
 .sd-gauge > progress.sd-progress--error ~ .sd-gauge-label > :last-child {
   color: var(--color-error);
