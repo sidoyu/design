@@ -1,4 +1,4 @@
-/* AUTO-GENERATED from registry/ui/base.css — 손으로 편집하지 말 것. (sidoyu-design v0.17.0) */
+/* AUTO-GENERATED from registry/ui/base.css — 손으로 편집하지 말 것. (sidoyu-design v0.18.0) */
 /* sidoyu design system — base.css (소스. 소비처는 빌드가 버전 도장을 찍은 dist/base.css 를 복사한다)
  * 모양의 유일한 정본. 순수 CSS — Tailwind 소비처는 dist/tokens.css 다음에, 일반 CSS 소비처는 dist/tokens.vars.css 다음에 import 한다.
  * 레이어로 감싸지 않는다 — 일반 CSS 소비처에서는 보통의 선택자 우선순위로 동작한다(소비처의 레이어 밖 초기화에 지지 않는다).
@@ -156,6 +156,95 @@ progress.sd-progress--error {
   progress {
     -webkit-appearance: auto;
     appearance: auto;
+  }
+}
+
+/* 이름을 담는 진행 막대(.sd-gauge, v0.18.0) — 막대 안 왼쪽에 이름, 오른쪽에 수치를 넣고, 채움 위에 놓인 글자만 흰색으로 바꾼다.
+   막대는 그대로 <progress> 다(div 로 그리지 않는다). 마크업 순서 = progress → 글자 줄(.sd-gauge-label: 이름 span · 공백 한 칸 · 수치 span) →
+   채움 위 글자 줄(.sd-gauge-fill-label, 빈 span · data-name·data-value). 두 글자 줄은 aria-hidden 이고, 화면낭독기 이름은 progress 의 aria-label 이 맡는다.
+   채움 비율은 소비처가 style="--sd-gauge-fill: 0.63" 처럼 값 ÷ 최댓값(0~1)으로 준다(예: value 63 · max 100 → 0.63 · 63 을 그대로 넣지 않는다).
+   흰 글자는 CSS 가 data- 속성에서 만들어 낸다(::before·::after). 그래서 이 규칙이 듣지 않는 곳에는 글자가 처음부터 한 벌만 있다 —
+   인쇄·강제 색상 모드에서는 글자 줄이 막대 위에 따로 놓이고(막대는 v0.16.0 모양 10px), 옛 base.css(v0.17.0 이하)에서는 마크업 순서대로 막대 다음에 글자 한 벌이다.
+   높이 24 · 글자 12/16 · 굵기 400(임계 이상 수치만 500) · 좌우 여백 6. 폭은 소비처 몫(이름과 수치가 함께 들어가는 폭으로 정한다 — 그래도 넘치는 이름은 끝을 말줄임표로 줄이고 수치는 그대로 둔다).
+   임계 이상 수치 규칙은 형제 선택자(~)로 고른다 — 마크업 순서가 정해져 있어 :has() 가 필요 없다. */
+.sd-gauge {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 400;
+}
+.sd-gauge-label {
+  order: -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+  color: var(--color-ink);
+}
+/* 이름이 폭을 넘치면 끝을 말줄임표로 줄인다 — 수치는 줄이지 않는다(막대 밖으로 밀려 이웃과 겹치지 않게). 전체 이름은 aria-label 이 갖는다 */
+.sd-gauge-label > :first-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sd-gauge-label > :last-child {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+.sd-gauge-fill-label {
+  display: none;
+}
+/* 임계 이상 = 막대에 sd-progress--error(v0.16.0) 를 붙이면 채움 밖 수치가 오류 색 + 굵기 500 이 된다 */
+.sd-gauge > progress.sd-progress--error ~ .sd-gauge-label > :last-child {
+  color: var(--color-error);
+  font-weight: 500;
+}
+/* 일반 화면에서만 글자를 막대 안에 포갠다. 위치 지정 요소는 문서 순서대로 그려지므로 z-index 없이 progress → 글자 줄 → 흰 글자 줄 순으로 쌓인다.
+   흰 글자 줄은 채움 길이만큼만 보인다: 채움 = 테두리 1px 안쪽 폭 × 비율이므로 오른쪽을 (폭 - 2px) × (1 - 비율) + 1px 만큼 자른다 */
+@media screen and (forced-colors: none) {
+  .sd-gauge {
+    position: relative;
+    display: block;
+    height: 1.5rem;
+  }
+  .sd-gauge > progress {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+  }
+  .sd-gauge-label,
+  .sd-gauge-fill-label {
+    position: absolute;
+    inset: 0;
+    padding-inline: 0.375rem;
+  }
+  .sd-gauge-fill-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.25rem;
+    white-space: nowrap;
+    color: var(--color-surface);
+    clip-path: inset(0 calc((100% - 2px) * (1 - clamp(0, var(--sd-gauge-fill, 0), 1)) + 1px) 0 0);
+  }
+  /* 흰 글자 줄도 아래 글자 줄과 같은 자리에서 같은 길이로 줄인다(두 줄의 칸 규칙이 같아야 글자가 겹쳐 맞는다) */
+  .sd-gauge-fill-label::before {
+    content: attr(data-name);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .sd-gauge-fill-label::after {
+    content: attr(data-value);
+    flex: none;
+    font-variant-numeric: tabular-nums;
+  }
+  .sd-gauge > progress.sd-progress--error ~ .sd-gauge-fill-label::after {
+    font-weight: 500;
   }
 }
 
