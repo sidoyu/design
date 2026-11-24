@@ -1,4 +1,4 @@
-// sidoyu-design v0.15.1 — 모양 정본 = base.css 의 sd-* 클래스 (이 줄은 빌드가 갱신)
+// sidoyu-design v0.15.2 — 모양 정본 = base.css 의 sd-* 클래스 (이 줄은 빌드가 갱신)
 import Link from "next/link";
 import { cx } from "./cx";
 
@@ -18,6 +18,20 @@ type CardProps = {
   children?: React.ReactNode;
 };
 
+/**
+ * 앱 화면 주소인가(v0.15.2) — 아니면 Next.js 링크 대신 일반 <a> 로 그린다.
+ * Next.js 링크는 화면에 보이면 대상 화면을 미리 불러오는데(?_rsc= 요청), public/ 의 정적 파일에는 그 요청을 받을
+ * 화면이 없어 404 가 난다(sidoyu.com /ai 의 /ai-notes/*.html 실측). 앱 화면이 아니라고 보는 주소 = 다른 사이트
+ * (https:·mailto: 같은 scheme, //) · 마지막 경로 조각이 확장자로 끝나는 파일(/ai-notes/x.html · /cv.pdf).
+ * 판정이 틀려 앱 화면을 일반 링크로 그려도 이동은 된다(화면 전체를 새로 받을 뿐) — 틀리는 방향이 안전한 쪽이다.
+ */
+function isAppRoute(href: string) {
+  if (/^[a-z][a-z0-9+.-]*:/i.test(href) || href.startsWith("//")) return false;
+  const path = href.split(/[?#]/, 1)[0];
+  const last = path.slice(path.lastIndexOf("/") + 1);
+  return !/\.[a-z0-9]+$/i.test(last);
+}
+
 export function Card({ href, eyebrow, title, description, className, children }: CardProps) {
   const inner = (
     <>
@@ -29,8 +43,16 @@ export function Card({ href, eyebrow, title, description, className, children }:
   );
 
   if (href) {
+    const cls = cx("sd-block sd-block-link", className);
+    if (!isAppRoute(href)) {
+      return (
+        <a href={href} className={cls}>
+          {inner}
+        </a>
+      );
+    }
     return (
-      <Link href={href} className={cx("sd-block sd-block-link", className)}>
+      <Link href={href} className={cls}>
         {inner}
       </Link>
     );
